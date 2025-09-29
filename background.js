@@ -101,21 +101,25 @@ async function startRun({ rows, mapping }) {
         continue;
       }
 
-      // normalize mapping by removing customG_0 if present
-      try {
-        const u = new URL(baseUrl);
-        u.searchParams.delete('customG_0');
-        baseUrl = u.toString();
-      } catch(e) {
-        // if invalid URL, still attempt to append
-      }
-
-      const finalUrl = addOrReplaceParam(baseUrl, 'customG_0', customId);
+      // DO NOT normalize or re-encode mapping URL; use as-is
+      // Only add or replace customG_0 param, preserving original encoding
+      const finalUrl = (() => {
+        // If mapping already has customG_0, replace it; else, append
+        let url = baseUrl;
+        if (url.includes('customG_0=')) {
+          // Replace existing customG_0 value
+          url = url.replace(/([?&]customG_0=)[^&]*/, `$1${encodeURIComponent(customId)}`);
+        } else {
+          // Append customG_0
+          url += (url.includes('?') ? '&' : '?') + 'customG_0=' + encodeURIComponent(customId);
+        }
+        return url;
+      })();
       chrome.runtime.sendMessage({ action: 'log', message: `Opening tag ${tag} -> ${finalUrl}`, level: 'info', meta: { tag, finalUrl, rowIndex: ri }});
       chrome.runtime.sendMessage({ action: 'status', rowIndex: ri, tag, status: 'opening', url: finalUrl });
 
       try {
-        // open tab
+        // open tab (always opens in a new tab)
         const createdTab = await chrome.tabs.create({ url: finalUrl, active: false });
         const tabId = createdTab.id;
 
@@ -134,12 +138,12 @@ async function startRun({ rows, mapping }) {
         const attemptResult = await attemptClickInTab(tabId, config.retry_attempts || 2, config.post_click_wait_ms || 4000, config.skip_if_no_button);
         chrome.runtime.sendMessage({ action: 'status', rowIndex: ri, tag, status: attemptResult.success ? 'success' : 'failed', message: attemptResult.message });
 
-        // close tab
-        try {
-          await chrome.tabs.remove(tabId);
-        } catch(e) {
-          // ignore
-        }
+        // DO NOT close tab (per user request)
+        // try {
+        //   await chrome.tabs.remove(tabId);
+        // } catch(e) {
+        //   // ignore
+        // }
 
       } catch(e) {
         chrome.runtime.sendMessage({ action: 'log', message: `Error processing tag ${tag}: ${e && e.message}`, level: 'error', meta: { tag, rowIndex: ri }});
