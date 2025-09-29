@@ -28,27 +28,25 @@ fetch(chrome.runtime.getURL('mapping_sample.json'))
   })
   .catch(() => {});
 
-// Handle JSON file upload
-const jsonInput = document.getElementById('jsonInput');
-jsonInput.addEventListener('change', (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function(ev) {
-    try {
-      uploadedRows = JSON.parse(ev.target.result);
-      log('JSON rows loaded: ' + uploadedRows.length);
-    } catch (err) {
-      log('Error parsing JSON: ' + err.message);
-      uploadedRows = [];
-    }
-  };
-  reader.readAsText(file);
-});
+// function to parse pasted JSON from textarea
+function getPastedRows() {
+  const val = document.getElementById('jsonRowsInput').value.trim();
+  if (!val) return [];
+  try {
+    const arr = JSON.parse(val);
+    if (!Array.isArray(arr)) throw new Error('JSON must be an array');
+    return arr;
+  } catch (e) {
+    log('Error parsing pasted JSON: ' + e.message);
+    return [];
+  }
+}
 
+// Start button click handler
 document.getElementById('startBtn').addEventListener('click', () => {
   try {
-    if (!uploadedRows.length) { log('No rows loaded from JSON'); return; }
+    const uploadedRows = getPastedRows();
+    if (!uploadedRows.length) { log('No rows loaded from pasted JSON'); return; }
     const mapping = JSON.parse(document.getElementById('mappingInput').value);
     chrome.runtime.sendMessage({ action: 'startRun', payload: { rows: uploadedRows, mapping } }, (resp) => {
       if(resp && resp.ok) {
@@ -62,19 +60,29 @@ document.getElementById('startBtn').addEventListener('click', () => {
   }
 });
 
+// Stop button click handler
 document.getElementById('stopBtn').addEventListener('click', () => {
   chrome.runtime.sendMessage({ action: 'stopRun' }, (resp) => {
     log('Stop requested');
   });
 });
 
+// Preview button click handler
 document.getElementById('previewBtn').addEventListener('click', () => {
   try {
+    const uploadedRows = getPastedRows();
     if (!uploadedRows.length) { log('No rows loaded'); return; }
     const mapping = JSON.parse(document.getElementById('mappingInput').value);
     const first = uploadedRows[0];
     const custom = (new URL(first.uploaded_mockup)).searchParams.get('customG_0');
-    const tags = (first.Tags || '').split(',').map(t=>t.trim()).filter(Boolean);
+    let tags = first.Tags;
+    if (Array.isArray(tags)) {
+      tags = tags.map(t => String(t).trim()).filter(Boolean);
+    } else if (typeof tags === 'string') {
+      tags = tags.split(',').map(t => t.trim()).filter(Boolean);
+    } else {
+      tags = [];
+    }
     const assembled = tags.map(t=>{
       let base = mapping[t] || '[MISSING]';
       try {
