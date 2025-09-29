@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Placeit Bulk Mockup</title>
+    <style>
+      body { font-family: Arial, sans-serif; width: 480px; padding: 12px; }
+      textarea, input, select { width: 100%; box-sizing: border-box; margin-bottom: 8px; }
+      .row { display:flex; gap:8px; }
+      button { padding:8px 12px; margin-right:6px; }
+      #log { height:180px; overflow:auto; background:#111; color:#fff; padding:8px; font-size:12px; }
+      pre.small { font-size:11px; max-height:120px; overflow:auto; }
+    </style>
+  </head>
+  <body>
+    <h3>Placeit Bulk Mockup — Prototype</h3>
+    <label>Upload CSV / XLSX (Paste CSV content below for prototype)</label>
+    <textarea id="csvInput" placeholder="Paste CSV content here (or use XLSX in production)"></textarea>
+
+    <label>Tag → Base URL mapping (JSON)</label>
+    <textarea id="mappingInput" rows="6">{
+
+}</textarea>
+
+    <label>Config (JSON)</label>
+    <textarea id="configInput" rows="4">{
+  "open_interval_ms": 5000,
+  "wait_before_click_ms": 10000,
+  "retry_attempts": 2,
+  "timeout_ms": 30000,
+  "post_click_wait_ms": 4000,
+  "skip_if_no_button": true
+}</textarea>
+
+    <div class="row">
+      <button id="startBtn">Start</button>
+      <button id="stopBtn">Stop</button>
+      <button id="previewBtn">Preview first URL</button>
+    </div>
+
+    <h4>Log</h4>
+    <div id="log"></div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
