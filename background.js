@@ -58,10 +58,18 @@ function addOrReplaceParam(baseUrl, key, value) {
   return u.toString();
 }
 
-async function startRun({ rows, mapping, config }) {
+async function startRun({ rows, mapping }) {
   // rows: array of { productCode, uploaded_mockup, Tags }
   // mapping: { tagCode: baseUrl, ... }
-  // config: object with open_interval_ms, wait_before_click_ms, retry_attempts, timeout_ms, post_click_wait_ms, max_concurrent_tabs, skip_if_no_button
+  // config: now hardcoded below
+  const config = {
+    open_interval_ms: 5000,
+    wait_before_click_ms: 10000,
+    retry_attempts: 2,
+    timeout_ms: 30000,
+    post_click_wait_ms: 4000,
+    skip_if_no_button: true
+  };
   chrome.runtime.sendMessage({ action: 'log', message: 'Run started', level: 'info' });
 
   for (let ri = 0; ri < rows.length; ++ri) {

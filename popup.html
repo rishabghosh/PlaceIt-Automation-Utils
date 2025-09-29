@@ -14,22 +14,12 @@
   </head>
   <body>
     <h3>Placeit Bulk Mockup — Prototype</h3>
-    <label>Upload CSV / XLSX (Paste CSV content below for prototype)</label>
-    <textarea id="csvInput" placeholder="Paste CSV content here (or use XLSX in production)"></textarea>
+    <label>Upload JSON (rows)</label>
+    <input type="file" id="jsonInput" accept="application/json" />
 
     <label>Tag → Base URL mapping (JSON)</label>
     <textarea id="mappingInput" rows="6">{
 
-}</textarea>
-
-    <label>Config (JSON)</label>
-    <textarea id="configInput" rows="4">{
-  "open_interval_ms": 5000,
-  "wait_before_click_ms": 10000,
-  "retry_attempts": 2,
-  "timeout_ms": 30000,
-  "post_click_wait_ms": 4000,
-  "skip_if_no_button": true
 }</textarea>
 
     <div class="row">

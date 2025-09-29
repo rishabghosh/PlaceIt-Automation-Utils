@@ -10,31 +10,47 @@ function log(msg, level='info') {
   el.prepend(p);
 }
 
-function parseCSV(text) {
-  // very simple CSV parse: assume header row and no quoted commas
-  const lines = text.split(/\r?\n/).map(l=>l.trim()).filter(Boolean);
-  if(lines.length < 2) return [];
-  const headers = lines[0].split(',').map(h=>h.trim());
-  const rows = [];
-  for(let i=1;i<lines.length;i++){
-    const vals = lines[i].split(',').map(v=>v.trim());
-    const obj = {};
-    for(let j=0;j<headers.length;j++){
-      obj[headers[j]] = vals[j] || '';
+let uploadedRows = [];
+let defaultConfig = {
+  open_interval_ms: 5000,
+  wait_before_click_ms: 10000,
+  retry_attempts: 2,
+  timeout_ms: 30000,
+  post_click_wait_ms: 4000,
+  skip_if_no_button: true
+};
+
+// Load mapping_sample.json on extension load
+fetch(chrome.runtime.getURL('mapping_sample.json'))
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById('mappingInput').value = JSON.stringify(data, null, 2);
+  })
+  .catch(() => {});
+
+// Handle JSON file upload
+const jsonInput = document.getElementById('jsonInput');
+jsonInput.addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    try {
+      uploadedRows = JSON.parse(ev.target.result);
+      log('JSON rows loaded: ' + uploadedRows.length);
+    } catch (err) {
+      log('Error parsing JSON: ' + err.message);
+      uploadedRows = [];
     }
-    rows.push(obj);
-  }
-  return rows;
-}
+  };
+  reader.readAsText(file);
+});
 
 document.getElementById('startBtn').addEventListener('click', () => {
   try {
-    const csvText = document.getElementById('csvInput').value;
-    const rows = parseCSV(csvText);
-    if(!rows.length) { log('No rows parsed from CSV'); return; }
+    if (!uploadedRows.length) { log('No rows loaded from JSON'); return; }
     const mapping = JSON.parse(document.getElementById('mappingInput').value);
-    const config = JSON.parse(document.getElementById('configInput').value);
-    chrome.runtime.sendMessage({ action: 'startRun', payload: { rows, mapping, config } }, (resp) => {
+    chrome.runtime.sendMessage({ action: 'startRun', payload: { rows: uploadedRows, mapping } }, (resp) => {
       if(resp && resp.ok) {
         log('Run started');
       } else {
@@ -54,11 +70,9 @@ document.getElementById('stopBtn').addEventListener('click', () => {
 
 document.getElementById('previewBtn').addEventListener('click', () => {
   try {
-    const csvText = document.getElementById('csvInput').value;
-    const rows = parseCSV(csvText);
-    if(!rows.length) { log('No rows parsed'); return; }
+    if (!uploadedRows.length) { log('No rows loaded'); return; }
     const mapping = JSON.parse(document.getElementById('mappingInput').value);
-    const first = rows[0];
+    const first = uploadedRows[0];
     const custom = (new URL(first.uploaded_mockup)).searchParams.get('customG_0');
     const tags = (first.Tags || '').split(',').map(t=>t.trim()).filter(Boolean);
     const assembled = tags.map(t=>{
