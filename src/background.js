@@ -9,13 +9,13 @@
  * Sends status updates via chrome.runtime.sendMessage back to popup.
  */
 
-let runState = {
+const runState = {
   running: false,
   stopRequested: false
 };
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-  if(!msg || !msg.action) return;
+  if(!msg?.action) return;
   if(msg.action === 'startRun') {
     if(runState.running) {
       sendResponse({ ok: false, error: 'Run already in progress' });
@@ -28,7 +28,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
       chrome.runtime.sendMessage({ action: 'runFinished' });
     }).catch(err => {
       runState.running = false;
-      chrome.runtime.sendMessage({ action: 'runError', error: err && err.message });
+      chrome.runtime.sendMessage({ action: 'runError', error: err?.message });
     });
     sendResponse({ ok: true });
   } else if(msg.action === 'stopRun') {
@@ -39,26 +39,18 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   return true;
 });
 
-function sleep(ms) {
-  return new Promise(res => setTimeout(res, ms));
-}
+const sleep = (ms) => new Promise(res => setTimeout(res, ms));
 
-function parseQueryParam(url, key) {
+const parseQueryParam = (url, key) => {
   try {
     const u = new URL(url);
     return u.searchParams.get(key);
   } catch(e) {
     return null;
   }
-}
+};
 
-function addOrReplaceParam(baseUrl, key, value) {
-  const u = new URL(baseUrl);
-  u.searchParams.set(key, value);
-  return u.toString();
-}
-
-async function startRun({ rows, mapping }) {
+const startRun = async ({ rows, mapping }) => {
   // rows: array of { productCode, uploaded_mockup, Tags }
   // mapping: { tagCode: baseUrl, ... }
   // config: now hardcoded below
@@ -72,12 +64,11 @@ async function startRun({ rows, mapping }) {
   };
   chrome.runtime.sendMessage({ action: 'log', message: 'Run started', level: 'info' });
 
-  for (let ri = 0; ri < rows.length; ++ri) {
+  rows.forEach(async (row, ri) => {
     if(runState.stopRequested) {
       chrome.runtime.sendMessage({ action: 'log', message: 'Stop requested — aborting run', level: 'warn' });
-      break;
+      return;
     }
-    const row = rows[ri];
     const productCode = row.productCode || row.productCode === 0 ? String(row.productCode) : '';
     const uploaded_mockup = row.uploaded_mockup;
     const tagsCell = row.Tags || row.Tags === 0 ? String(row.Tags) : '';
@@ -86,19 +77,18 @@ async function startRun({ rows, mapping }) {
     const customId = parseQueryParam(uploaded_mockup, 'customG_0');
     if(!customId) {
       chrome.runtime.sendMessage({ action: 'status', rowIndex: ri, status: 'skipped', reason: 'missing_customG_0' });
-      continue;
+      return;
     }
 
     // split tags: allow comma or comma+space
     const tags = tagsCell.split(',').map(t => t.trim()).filter(Boolean);
-    for (let ti = 0; ti < tags.length; ++ti) {
-      if(runState.stopRequested) break;
-      const tag = tags[ti];
-      let baseUrl = mapping[tag];
+    tags.forEach(async (tag, ti) => {
+      if(runState.stopRequested) return;
+      const baseUrl = mapping[tag];
       if(!baseUrl) {
         chrome.runtime.sendMessage({ action: 'log', message: `Tag mapping missing for ${tag}. Skipping.`, level: 'warn', meta: { tag, rowIndex: ri }});
         chrome.runtime.sendMessage({ action: 'status', rowIndex: ri, tag, status: 'skipped', reason: 'missing_tag_mapping' });
-        continue;
+        return;
       }
 
       // DO NOT normalize or re-encode mapping URL; use as-is
@@ -125,7 +115,7 @@ async function startRun({ rows, mapping }) {
 
         // wait for load or timeout
         const pageLoadTimeout = config.timeout_ms || 30000;
-        let loaded = await waitForTabComplete(tabId, pageLoadTimeout);
+        const loaded = await waitForTabComplete(tabId, pageLoadTimeout);
         if(!loaded) {
           chrome.runtime.sendMessage({ action: 'log', message: `Tab ${tabId} did not finish loading within timeout.`, level: 'warn', meta: { tabId, rowIndex: ri, tag }});
         }
@@ -146,48 +136,51 @@ async function startRun({ rows, mapping }) {
         // }
 
       } catch(e) {
-        chrome.runtime.sendMessage({ action: 'log', message: `Error processing tag ${tag}: ${e && e.message}`, level: 'error', meta: { tag, rowIndex: ri }});
-        chrome.runtime.sendMessage({ action: 'status', rowIndex: ri, tag, status: 'failed', message: e && e.message });
+        chrome.runtime.sendMessage({ action: 'log', message: `Error processing tag ${tag}: ${e?.message}`, level: 'error', meta: { tag, rowIndex: ri }});
+        chrome.runtime.sendMessage({ action: 'status', rowIndex: ri, tag, status: 'failed', message: e?.message });
       }
 
       // wait open_interval_ms before next tag
       const openInterval = config.open_interval_ms || 5000;
       await sleep(openInterval);
-    } // tags loop
-  } // rows loop
+    }); // tags loop
+  }); // rows loop
 
   chrome.runtime.sendMessage({ action: 'log', message: 'Run completed', level: 'info' });
-}
+};
 
 /**
  * Wait until tab's document.readyState is 'complete' or until timeout
  */
-function waitForTabComplete(tabId, timeoutMs) {
+const waitForTabComplete = (tabId, timeoutMs) => {
   return new Promise((resolve) => {
     const start = Date.now();
-    function check() {
+    const check = () => {
       chrome.tabs.get(tabId).then(tab => {
         if(!tab) return resolve(false);
         // detect if suspended or discarded
         if(tab.status === 'complete') return resolve(true);
         if(Date.now() - start > timeoutMs) return resolve(false);
         setTimeout(check, 500);
-      }).catch(err => resolve(false));
-    }
+      }).catch(() => resolve(false));
+    };
     check();
   });
-}
+};
 
 /**
  * attemptClickInTab: uses chrome.scripting.executeScript to run click routine in the tab.
  * Retries clicking if necessary.
  */
-async function attemptClickInTab(tabId, retryAttempts, postClickWaitMs, skipIfNoButton) {
+const attemptClickInTab = async (tabId, retryAttempts, postClickWaitMs, skipIfNoButton) => {
   let lastErr = null;
-  for(let attempt=0; attempt < (retryAttempts||1); ++attempt) {
+
+  const attempts = Array.from({ length: retryAttempts || 1 }, (_, i) => i);
+
+  for(const attempt of attempts) {
     try {
-      const results = await chrome.scripting.executeScript({
-        target: { tabId: tabId },
+      await chrome.scripting.executeScript({
+        target: { tabId },
         files: ['content.js']
       });
       // content.js sends a message back with result via chrome.runtime.sendMessage - but executeScript returns result of last expression
@@ -196,11 +189,9 @@ async function attemptClickInTab(tabId, retryAttempts, postClickWaitMs, skipIfNo
       // We assume content script set window.__placeit_click_result on the page; try to read it
       const readRes = await chrome.scripting.executeScript({
         target: { tabId },
-        func: () => {
-          return window.__placeit_click_result || { success: false, message: 'no_result' };
-        }
+        func: () => window.__placeit_click_result || { success: false, message: 'no_result' }
       });
-      const val = readRes && readRes[0] && readRes[0].result ? readRes[0].result : { success: false, message: 'no_result' };
+      const val = readRes?.[0]?.result || { success: false, message: 'no_result' };
       if(val.success) {
         return { success: true, message: val.message || 'clicked' };
       } else {
@@ -212,9 +203,9 @@ async function attemptClickInTab(tabId, retryAttempts, postClickWaitMs, skipIfNo
         await new Promise(res => setTimeout(res, 1000 + attempt*500));
       }
     } catch(e) {
-      lastErr = e && e.message;
+      lastErr = e?.message;
       await new Promise(res => setTimeout(res, 500));
     }
   }
   return { success: false, message: lastErr || 'unknown' };
-}
+};

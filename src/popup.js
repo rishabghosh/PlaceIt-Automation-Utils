@@ -3,21 +3,11 @@
  * Lightweight UI for prototype: reads pasted CSV, mapping JSON, config JSON, and sends run to background.
  */
 
-function log(msg, level='info') {
+const log = (msg) => {
   const el = document.getElementById('log');
   const p = document.createElement('div');
   p.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
   el.prepend(p);
-}
-
-let uploadedRows = [];
-let defaultConfig = {
-  open_interval_ms: 5000,
-  wait_before_click_ms: 10000,
-  retry_attempts: 2,
-  timeout_ms: 30000,
-  post_click_wait_ms: 4000,
-  skip_if_no_button: true
 };
 
 // Load mapping_sample.json on extension load
@@ -29,7 +19,7 @@ fetch(chrome.runtime.getURL('src/mapping_sample.json'))
   .catch(() => {});
 
 // function to parse pasted JSON from textarea
-function getPastedRows() {
+const getPastedRows = () => {
   const val = document.getElementById('jsonRowsInput').value.trim();
   if (!val) return [];
   try {
@@ -40,7 +30,7 @@ function getPastedRows() {
     log('Error parsing pasted JSON: ' + e.message);
     return [];
   }
-}
+};
 
 // Start button click handler
 document.getElementById('startBtn').addEventListener('click', () => {
@@ -83,7 +73,7 @@ document.getElementById('previewBtn').addEventListener('click', () => {
     } else {
       tags = [];
     }
-    const assembled = tags.map(t=>{
+    const assembled = tags.map(t => {
       let base = mapping[t] || '[MISSING]';
       try {
         const u = new URL(base);
