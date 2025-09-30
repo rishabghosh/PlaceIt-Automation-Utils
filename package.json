@@ -1,0 +1,27 @@
+{
+  "name": "placeit-automation-utils",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Placeit Bulk Mockup Downloader (Chrome Extension)",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rishabghosh/PlaceIt-Automation-Utils.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rishabghosh/PlaceIt-Automation-Utils/issues"
+  },
+  "homepage": "https://github.com/rishabghosh/PlaceIt-Automation-Utils#readme",
+  "devDependencies": {
+    "@crxjs/vite-plugin": "^2.2.0",
+    "@types/chrome": "^0.1.14",
+    "vite": "^7.1.7"
+  }
+}
