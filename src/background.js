@@ -108,44 +108,12 @@ const injectClickScript = (tabId) => {
   return chrome.scripting.executeScript({
     target: { tabId },
     func: (buttonTimeout, modalWait) => {
-      const DOWNLOAD_BUTTON_SELECTORS = [
-        'button.button.primary.download-button.subscribed-user.show',
-        'button.download-button',
-        'div.download-button-wrapper button'
-      ];
-
-      const DOWNLOAD_TEXT_PATTERNS = ['download'];
-
       const setClickResult = (success, message) => {
         window.__placeit_click_result = { success, message };
       };
 
-      const findElementBySelectors = (selectors) => {
-        return selectors
-          .map(selector => document.querySelector(selector))
-          .find(element => element) || null;
-      };
-
-      const findElementByText = (textPatterns) => {
-        const walker = document.createTreeWalker(
-          document.body,
-          NodeFilter.SHOW_ELEMENT
-        );
-
-        while (walker.nextNode()) {
-          const node = walker.currentNode;
-          try {
-            const text = node.innerText?.trim().toLowerCase();
-            if (textPatterns.includes(text)) return node;
-          } catch (e) {
-          }
-        }
-        return null;
-      };
-
       const findDownloadButton = () => {
-        return findElementBySelectors(DOWNLOAD_BUTTON_SELECTORS) ||
-               findElementByText(DOWNLOAD_TEXT_PATTERNS);
+        return document.querySelector('div.download-button-wrapper button.download-button');
       };
 
       const observeForElement = (findFunction, timeoutMs) => {
