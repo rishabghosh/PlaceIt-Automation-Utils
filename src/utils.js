@@ -1,8 +1,3 @@
-/**
- * utils.js
- * URL manipulation utilities for query parameters
- */
-
 const extractQueryParam = (url, key) => {
   try {
     const urlObject = new URL(url);

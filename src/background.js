@@ -1,11 +1,3 @@
-/**
- * background.js (service worker)
- * Orchestrates the download automation workflow:
- * - Receives rows and mapping from popup
- * - Opens tabs for each tag URL
- * - Injects click script to trigger downloads
- */
-
 const DEFAULT_CONFIG = {
   open_interval_ms: 5000,
   wait_before_click_ms: 10000,
@@ -22,7 +14,6 @@ const runState = {
   stopRequested: false
 };
 
-// Message handlers
 const handleStartRun = (payload, sendResponse) => {
   if (runState.running) {
     sendResponse({ ok: false, error: 'Run already in progress' });
@@ -59,10 +50,9 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     handleStopRun(sendResponse);
   }
 
-  return true; // Allow async response
+  return true;
 });
 
-// Utility functions
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 const sendMessage = (action, data = {}) => {
@@ -163,7 +153,7 @@ const attemptClickInTab = async (tabId, config) => {
         return { success: false, message: 'button_not_found_and_skipping' };
       }
 
-      await sleep(1000 + attempt * 500); // Exponential backoff
+      await sleep(1000 + attempt * 500);
     } catch (e) {
       lastError = e?.message;
       await sleep(500);

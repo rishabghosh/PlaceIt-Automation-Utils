@@ -1,15 +1,5 @@
-/**
- * popup.js
- * UI for the extension popup:
- * - Loads mapping JSON
- * - Parses pasted row data
- * - Sends run commands to background script
- * - Displays logs and status updates
- */
-
 const MAPPING_FILE_PATH = 'src/mapping_sample.json';
 
-// DOM element IDs
 const ELEMENTS = {
   log: 'log',
   jsonRowsInput: 'jsonRowsInput',
@@ -19,7 +9,6 @@ const ELEMENTS = {
   previewBtn: 'previewBtn'
 };
 
-// Logging utilities
 const createLogEntry = (message) => {
   const entry = document.createElement('div');
   const timestamp = new Date().toLocaleTimeString();
@@ -33,7 +22,6 @@ const log = (message) => {
   logContainer.prepend(entry);
 };
 
-// Data parsing utilities
 const parseJSON = (jsonString) => {
   try {
     return { success: true, data: JSON.parse(jsonString) };
@@ -72,7 +60,6 @@ const getMappingConfig = () => {
   return parseJSON(input);
 };
 
-// Chrome message utilities
 const sendMessageToBackground = (action, payload = {}) => {
   return new Promise((resolve) => {
     chrome.runtime.sendMessage({ action, payload }, (response) => {
@@ -81,7 +68,6 @@ const sendMessageToBackground = (action, payload = {}) => {
   });
 };
 
-// Tag normalization utilities
 const normalizeTagsToArray = (tags) => {
   if (Array.isArray(tags)) {
     return tags.map(tag => String(tag).trim()).filter(Boolean);
@@ -120,7 +106,6 @@ const generatePreviewUrls = (firstRow, mapping) => {
   });
 };
 
-// Button handlers
 const handleStartClick = async () => {
   const rows = getPastedRows();
   if (!rows.length) {
@@ -172,7 +157,6 @@ const handlePreviewClick = () => {
   }
 };
 
-// Message handlers from background
 const handleLogMessage = (message) => {
   log(message);
 };
@@ -192,7 +176,6 @@ const handleRunError = (error) => {
   log('Run error: ' + (error || 'unknown'));
 };
 
-// Initialize event listeners
 const initializeEventListeners = () => {
   document.getElementById(ELEMENTS.startBtn).addEventListener('click', handleStartClick);
   document.getElementById(ELEMENTS.stopBtn).addEventListener('click', handleStopClick);
@@ -211,17 +194,14 @@ const initializeEventListeners = () => {
   });
 };
 
-// Load mapping file on startup
 const loadMappingSample = async () => {
   try {
     const response = await fetch(chrome.runtime.getURL(MAPPING_FILE_PATH));
     const data = await response.json();
     document.getElementById(ELEMENTS.mappingInput).value = JSON.stringify(data, null, 2);
   } catch (e) {
-    // Silently fail if mapping file doesn't exist
   }
 };
 
-// Initialize application
 loadMappingSample();
 initializeEventListeners();

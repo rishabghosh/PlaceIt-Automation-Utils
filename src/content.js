@@ -1,9 +1,3 @@
-/**
- * content.js
- * Locates and clicks the Download button using multiple fallback strategies.
- * Result is written to window.__placeit_click_result for the background script to read.
- */
-
 (() => {
   const DOWNLOAD_BUTTON_SELECTORS = [
     'button.button.primary.download-button.subscribed-user.show',
@@ -37,7 +31,6 @@
         const text = node.innerText?.trim().toLowerCase();
         if (textPatterns.includes(text)) return node;
       } catch (e) {
-        // Continue searching if error occurs
       }
     }
     return null;
@@ -82,7 +75,6 @@
     try {
       element.scrollIntoView({ block: 'center', inline: 'center' });
     } catch (e) {
-      // Scrolling failed, but we can still try to click
     }
   };
 
