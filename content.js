@@ -93,7 +93,7 @@
         const candidates = Array.from(document.querySelectorAll('button')).filter(b=>{
           try{
             const txt = b.innerText && b.innerText.trim().toLowerCase();
-            return txt && txt.includes('download') || txt.includes('export') || txt.includes('save');
+            return txt && txt.includes('download');
           }catch(e){ return false; }
         });
         return candidates.length ? candidates[0] : null;
