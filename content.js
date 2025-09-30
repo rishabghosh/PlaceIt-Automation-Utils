@@ -30,6 +30,10 @@
     return null;
   }
 
+  function findDownloadButton() {
+    return document.querySelector('button.download-button')
+  }
+
   function waitForButton(timeoutMs) {
     return new Promise((resolve) => {
       const existing = findBySelectorList() || findByText();
@@ -37,6 +41,25 @@
 
       const mo = new MutationObserver(() => {
         const found = findBySelectorList() || findByText();
+        if(found) {
+          mo.disconnect();
+          resolve(found);
+        }
+      });
+      mo.observe(document, { childList: true, subtree: true, attributes: true });
+      setTimeout(() => {
+        mo.disconnect();
+        resolve(null);
+      }, timeoutMs || 15000);
+    });
+  }
+
+  function waitForDownloadButton(timeoutMs) {
+    return new Promise((resolve) => {
+      const existing = findDownloadButton();
+      if(existing) return resolve(existing);
+      const mo = new MutationObserver(() => {
+        const found = findDownloadButton();
         if(found) {
           mo.disconnect();
           resolve(found);
@@ -85,5 +108,21 @@
     }
   }
 
+  async function clickDownloadButton() {
+    const btn = await waitForDownloadButton(15000);
+    if (!btn) {
+      window.__placeit_click_result = { success: false, message: 'download_button_not_found' };
+      return;
+    }
+    try {
+      btn.click();
+      console.log("About to click Button:", btn);
+      window.__placeit_click_result = { success: true, message: 'download_button_clicked' };
+    } catch (e) {
+      window.__placeit_click_result = { success: false, message: 'download_button_click_failed' };
+    }
+  }
+
   attemptClickFlow();
+  clickDownloadButton();
 })();
