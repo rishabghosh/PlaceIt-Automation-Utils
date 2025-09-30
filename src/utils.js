@@ -1,4 +1,4 @@
-const extractQueryParam = (url, key) => {
+export const extractQueryParam = (url, key) => {
   try {
     const urlObject = new URL(url);
     return urlObject.searchParams.get(key);
@@ -7,7 +7,7 @@ const extractQueryParam = (url, key) => {
   }
 };
 
-const addOrReplaceParam = (url, key, value) => {
+export const addOrReplaceParam = (url, key, value) => {
   try {
     const urlObject = new URL(url);
     urlObject.searchParams.set(key, value);
@@ -23,5 +23,3 @@ const buildFallbackUrl = (url, key, value) => {
   const separator = url.includes('?') ? '&' : '?';
   return `${url}${separator}${encodedKey}=${encodedValue}`;
 };
-
-export { extractQueryParam, addOrReplaceParam };

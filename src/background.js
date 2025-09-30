@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG, TAB_CHECK_INTERVAL_MS } from './config.js';
+import { DEFAULT_CONFIG, TAB_CHECK_INTERVAL_MS, BUTTON_WAIT_TIMEOUT_MS, MODAL_WAIT_MS } from './config.js';
 
 const runState = {
   running: false,
@@ -104,9 +104,7 @@ const waitForTabComplete = (tabId, timeoutMs) => {
   });
 };
 
-const injectClickScript = async (tabId) => {
-  const { BUTTON_WAIT_TIMEOUT_MS, MODAL_WAIT_MS } = await import('./config.js');
-
+const injectClickScript = (tabId) => {
   return chrome.scripting.executeScript({
     target: { tabId },
     func: (buttonTimeout, modalWait) => {
