@@ -1,13 +1,4 @@
-const DEFAULT_CONFIG = {
-  open_interval_ms: 5000,
-  wait_before_click_ms: 10000,
-  retry_attempts: 2,
-  timeout_ms: 30000,
-  post_click_wait_ms: 4000,
-  skip_if_no_button: true
-};
-
-const TAB_CHECK_INTERVAL_MS = 500;
+import { DEFAULT_CONFIG, TAB_CHECK_INTERVAL_MS } from './config.js';
 
 const runState = {
   running: false,

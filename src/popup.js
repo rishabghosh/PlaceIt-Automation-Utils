@@ -1,4 +1,4 @@
-const MAPPING_FILE_PATH = 'src/mapping_sample.json';
+import { MAPPING_FILE_PATH } from './config.js';
 
 const ELEMENTS = {
   log: 'log',

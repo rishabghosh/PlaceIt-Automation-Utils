@@ -1,3 +1,5 @@
+import { BUTTON_WAIT_TIMEOUT_MS, MODAL_WAIT_MS } from './config.js';
+
 (() => {
   const DOWNLOAD_BUTTON_SELECTORS = [
     'button.button.primary.download-button.subscribed-user.show',
@@ -6,8 +8,6 @@
   ];
 
   const DOWNLOAD_TEXT_PATTERNS = ['download', 'download now', 'download file'];
-  const BUTTON_WAIT_TIMEOUT_MS = 15000;
-  const MODAL_WAIT_MS = 1200;
 
   const setClickResult = (success, message) => {
     window.__placeit_click_result = { success, message };
