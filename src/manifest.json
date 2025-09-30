@@ -20,15 +20,9 @@
     "service_worker": "src/background.js",
     "type": "module"
   },
-  "content_scripts": [
-    {
-      "matches": ["https://placeit.net/*"],
-      "js": ["src/content.js"]
-    }
-  ],
   "web_accessible_resources": [
     {
-      "resources": ["src/content.js", "src/mapping_sample.json"],
+      "resources": ["src/mapping_sample.json"],
       "matches": ["https://placeit.net/*", "<all_urls>"]
     }
   ],

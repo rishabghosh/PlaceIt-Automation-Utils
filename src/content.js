@@ -1,3 +1,7 @@
+// NOTE: This file is not directly used in production.
+// The content script logic is injected inline from background.js
+// This file serves as a reference for the content script implementation.
+
 import { BUTTON_WAIT_TIMEOUT_MS, MODAL_WAIT_MS } from './config.js';
 
 (() => {
