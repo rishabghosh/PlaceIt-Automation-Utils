@@ -1,211 +1,260 @@
 /**
  * background.js (service worker)
- * Orchestrates rows -> tags -> open tab -> inject click script -> close tab
- *
- * Messages expected from popup:
- *   { action: 'startRun', payload: { rows, mapping, config } }
- *   { action: 'stopRun' }
- *
- * Sends status updates via chrome.runtime.sendMessage back to popup.
+ * Orchestrates the download automation workflow:
+ * - Receives rows and mapping from popup
+ * - Opens tabs for each tag URL
+ * - Injects click script to trigger downloads
  */
+
+const DEFAULT_CONFIG = {
+  open_interval_ms: 5000,
+  wait_before_click_ms: 10000,
+  retry_attempts: 2,
+  timeout_ms: 30000,
+  post_click_wait_ms: 4000,
+  skip_if_no_button: true
+};
+
+const TAB_CHECK_INTERVAL_MS = 500;
 
 const runState = {
   running: false,
   stopRequested: false
 };
 
-chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-  if(!msg?.action) return;
-  if(msg.action === 'startRun') {
-    if(runState.running) {
-      sendResponse({ ok: false, error: 'Run already in progress' });
-      return;
-    }
-    runState.running = true;
-    runState.stopRequested = false;
-    startRun(msg.payload).then(() => {
-      runState.running = false;
-      chrome.runtime.sendMessage({ action: 'runFinished' });
-    }).catch(err => {
-      runState.running = false;
-      chrome.runtime.sendMessage({ action: 'runError', error: err?.message });
-    });
-    sendResponse({ ok: true });
-  } else if(msg.action === 'stopRun') {
-    runState.stopRequested = true;
-    sendResponse({ ok: true });
+// Message handlers
+const handleStartRun = (payload, sendResponse) => {
+  if (runState.running) {
+    sendResponse({ ok: false, error: 'Run already in progress' });
+    return;
   }
-  // allow async response
-  return true;
+
+  runState.running = true;
+  runState.stopRequested = false;
+
+  startRun(payload)
+    .then(() => {
+      runState.running = false;
+      sendMessage('runFinished');
+    })
+    .catch(err => {
+      runState.running = false;
+      sendMessage('runError', { error: err?.message });
+    });
+
+  sendResponse({ ok: true });
+};
+
+const handleStopRun = (sendResponse) => {
+  runState.stopRequested = true;
+  sendResponse({ ok: true });
+};
+
+chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+  if (!msg?.action) return;
+
+  if (msg.action === 'startRun') {
+    handleStartRun(msg.payload, sendResponse);
+  } else if (msg.action === 'stopRun') {
+    handleStopRun(sendResponse);
+  }
+
+  return true; // Allow async response
 });
 
-const sleep = (ms) => new Promise(res => setTimeout(res, ms));
+// Utility functions
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-const parseQueryParam = (url, key) => {
+const sendMessage = (action, data = {}) => {
+  chrome.runtime.sendMessage({ action, ...data });
+};
+
+const logMessage = (message, level = 'info', meta = {}) => {
+  sendMessage('log', { message, level, ...meta });
+};
+
+const sendStatus = (rowIndex, tag, status, extraData = {}) => {
+  sendMessage('status', { rowIndex, tag, status, ...extraData });
+};
+
+const extractCustomId = (url) => {
   try {
-    const u = new URL(url);
-    return u.searchParams.get(key);
-  } catch(e) {
+    return new URL(url).searchParams.get('customG_0');
+  } catch (e) {
     return null;
   }
 };
 
-const startRun = async ({ rows, mapping }) => {
-  // rows: array of { productCode, uploaded_mockup, Tags }
-  // mapping: { tagCode: baseUrl, ... }
-  // config: now hardcoded below
-  const config = {
-    open_interval_ms: 5000,
-    wait_before_click_ms: 10000,
-    retry_attempts: 2,
-    timeout_ms: 30000,
-    post_click_wait_ms: 4000,
-    skip_if_no_button: true
-  };
-  chrome.runtime.sendMessage({ action: 'log', message: 'Run started', level: 'info' });
+const buildFinalUrl = (baseUrl, customId) => {
+  const encodedId = encodeURIComponent(customId);
 
-  rows.forEach(async (row, ri) => {
-    if(runState.stopRequested) {
-      chrome.runtime.sendMessage({ action: 'log', message: 'Stop requested — aborting run', level: 'warn' });
-      return;
-    }
-    const productCode = row.productCode || row.productCode === 0 ? String(row.productCode) : '';
-    const uploaded_mockup = row.uploaded_mockup;
-    const tagsCell = row.Tags || row.Tags === 0 ? String(row.Tags) : '';
-    chrome.runtime.sendMessage({ action: 'log', message: `Processing row ${ri+1}: ${productCode}`, level: 'info', meta: { rowIndex: ri, productCode } });
+  if (baseUrl.includes('customG_0=')) {
+    return baseUrl.replace(/([?&]customG_0=)[^&]*/, `$1${encodedId}`);
+  }
 
-    const customId = parseQueryParam(uploaded_mockup, 'customG_0');
-    if(!customId) {
-      chrome.runtime.sendMessage({ action: 'status', rowIndex: ri, status: 'skipped', reason: 'missing_customG_0' });
-      return;
-    }
-
-    // split tags: allow comma or comma+space
-    const tags = tagsCell.split(',').map(t => t.trim()).filter(Boolean);
-    tags.forEach(async (tag, ti) => {
-      if(runState.stopRequested) return;
-      const baseUrl = mapping[tag];
-      if(!baseUrl) {
-        chrome.runtime.sendMessage({ action: 'log', message: `Tag mapping missing for ${tag}. Skipping.`, level: 'warn', meta: { tag, rowIndex: ri }});
-        chrome.runtime.sendMessage({ action: 'status', rowIndex: ri, tag, status: 'skipped', reason: 'missing_tag_mapping' });
-        return;
-      }
-
-      // DO NOT normalize or re-encode mapping URL; use as-is
-      // Only add or replace customG_0 param, preserving original encoding
-      const finalUrl = (() => {
-        // If mapping already has customG_0, replace it; else, append
-        let url = baseUrl;
-        if (url.includes('customG_0=')) {
-          // Replace existing customG_0 value
-          url = url.replace(/([?&]customG_0=)[^&]*/, `$1${encodeURIComponent(customId)}`);
-        } else {
-          // Append customG_0
-          url += (url.includes('?') ? '&' : '?') + 'customG_0=' + encodeURIComponent(customId);
-        }
-        return url;
-      })();
-      chrome.runtime.sendMessage({ action: 'log', message: `Opening tag ${tag} -> ${finalUrl}`, level: 'info', meta: { tag, finalUrl, rowIndex: ri }});
-      chrome.runtime.sendMessage({ action: 'status', rowIndex: ri, tag, status: 'opening', url: finalUrl });
-
-      try {
-        // open tab (always opens in a new tab)
-        const createdTab = await chrome.tabs.create({ url: finalUrl, active: false });
-        const tabId = createdTab.id;
-
-        // wait for load or timeout
-        const pageLoadTimeout = config.timeout_ms || 30000;
-        const loaded = await waitForTabComplete(tabId, pageLoadTimeout);
-        if(!loaded) {
-          chrome.runtime.sendMessage({ action: 'log', message: `Tab ${tabId} did not finish loading within timeout.`, level: 'warn', meta: { tabId, rowIndex: ri, tag }});
-        }
-
-        // wait additional wait_before_click
-        const waitBeforeClick = config.wait_before_click_ms || 10000;
-        await sleep(waitBeforeClick);
-
-        // attempt click via scripting
-        const attemptResult = await attemptClickInTab(tabId, config.retry_attempts || 2, config.post_click_wait_ms || 4000, config.skip_if_no_button);
-        chrome.runtime.sendMessage({ action: 'status', rowIndex: ri, tag, status: attemptResult.success ? 'success' : 'failed', message: attemptResult.message });
-
-        // DO NOT close tab (per user request)
-        // try {
-        //   await chrome.tabs.remove(tabId);
-        // } catch(e) {
-        //   // ignore
-        // }
-
-      } catch(e) {
-        chrome.runtime.sendMessage({ action: 'log', message: `Error processing tag ${tag}: ${e?.message}`, level: 'error', meta: { tag, rowIndex: ri }});
-        chrome.runtime.sendMessage({ action: 'status', rowIndex: ri, tag, status: 'failed', message: e?.message });
-      }
-
-      // wait open_interval_ms before next tag
-      const openInterval = config.open_interval_ms || 5000;
-      await sleep(openInterval);
-    }); // tags loop
-  }); // rows loop
-
-  chrome.runtime.sendMessage({ action: 'log', message: 'Run completed', level: 'info' });
+  const separator = baseUrl.includes('?') ? '&' : '?';
+  return `${baseUrl}${separator}customG_0=${encodedId}`;
 };
 
-/**
- * Wait until tab's document.readyState is 'complete' or until timeout
- */
+const parseTags = (tagsCell) => {
+  const tagsString = tagsCell || tagsCell === 0 ? String(tagsCell) : '';
+  return tagsString.split(',').map(tag => tag.trim()).filter(Boolean);
+};
+
+const isTabLoaded = (tab) => tab?.status === 'complete';
+
 const waitForTabComplete = (tabId, timeoutMs) => {
   return new Promise((resolve) => {
-    const start = Date.now();
-    const check = () => {
-      chrome.tabs.get(tabId).then(tab => {
-        if(!tab) return resolve(false);
-        // detect if suspended or discarded
-        if(tab.status === 'complete') return resolve(true);
-        if(Date.now() - start > timeoutMs) return resolve(false);
-        setTimeout(check, 500);
-      }).catch(() => resolve(false));
+    const startTime = Date.now();
+
+    const checkTabStatus = () => {
+      chrome.tabs.get(tabId)
+        .then(tab => {
+          if (!tab) return resolve(false);
+          if (isTabLoaded(tab)) return resolve(true);
+          if (Date.now() - startTime > timeoutMs) return resolve(false);
+
+          setTimeout(checkTabStatus, TAB_CHECK_INTERVAL_MS);
+        })
+        .catch(() => resolve(false));
     };
-    check();
+
+    checkTabStatus();
   });
 };
 
-/**
- * attemptClickInTab: uses chrome.scripting.executeScript to run click routine in the tab.
- * Retries clicking if necessary.
- */
-const attemptClickInTab = async (tabId, retryAttempts, postClickWaitMs, skipIfNoButton) => {
-  let lastErr = null;
+const injectClickScript = (tabId) => {
+  return chrome.scripting.executeScript({
+    target: { tabId },
+    files: ['content.js']
+  });
+};
 
-  const attempts = Array.from({ length: retryAttempts || 1 }, (_, i) => i);
+const readClickResult = (tabId) => {
+  return chrome.scripting.executeScript({
+    target: { tabId },
+    func: () => window.__placeit_click_result || { success: false, message: 'no_result' }
+  });
+};
 
-  for(const attempt of attempts) {
+const extractClickResult = (scriptResult) => {
+  return scriptResult?.[0]?.result || { success: false, message: 'no_result' };
+};
+
+const attemptClickInTab = async (tabId, config) => {
+  const { retry_attempts, post_click_wait_ms, skip_if_no_button } = config;
+  let lastError = null;
+
+  for (let attempt = 0; attempt < retry_attempts; attempt++) {
     try {
-      await chrome.scripting.executeScript({
-        target: { tabId },
-        files: ['content.js']
-      });
-      // content.js sends a message back with result via chrome.runtime.sendMessage - but executeScript returns result of last expression
-      // We will also wait for a short duration to collect any post-click behavior
-      await new Promise(res => setTimeout(res, postClickWaitMs || 4000));
-      // We assume content script set window.__placeit_click_result on the page; try to read it
-      const readRes = await chrome.scripting.executeScript({
-        target: { tabId },
-        func: () => window.__placeit_click_result || { success: false, message: 'no_result' }
-      });
-      const val = readRes?.[0]?.result || { success: false, message: 'no_result' };
-      if(val.success) {
-        return { success: true, message: val.message || 'clicked' };
-      } else {
-        lastErr = val.message || 'click_failed';
-        if(skipIfNoButton) {
-          return { success: false, message: 'button_not_found_and_skipping' };
-        }
-        // retry after small backoff
-        await new Promise(res => setTimeout(res, 1000 + attempt*500));
+      await injectClickScript(tabId);
+      await sleep(post_click_wait_ms);
+
+      const scriptResult = await readClickResult(tabId);
+      const result = extractClickResult(scriptResult);
+
+      if (result.success) {
+        return { success: true, message: result.message || 'clicked' };
       }
-    } catch(e) {
-      lastErr = e?.message;
-      await new Promise(res => setTimeout(res, 500));
+
+      lastError = result.message || 'click_failed';
+
+      if (skip_if_no_button) {
+        return { success: false, message: 'button_not_found_and_skipping' };
+      }
+
+      await sleep(1000 + attempt * 500); // Exponential backoff
+    } catch (e) {
+      lastError = e?.message;
+      await sleep(500);
     }
   }
-  return { success: false, message: lastErr || 'unknown' };
+
+  return { success: false, message: lastError || 'unknown' };
+};
+
+const createTab = (url) => {
+  return chrome.tabs.create({ url, active: false });
+};
+
+const processTag = async (tag, baseUrl, customId, rowIndex, config) => {
+  const finalUrl = buildFinalUrl(baseUrl, customId);
+
+  logMessage(`Opening tag ${tag} -> ${finalUrl}`, 'info', { tag, finalUrl, rowIndex });
+  sendStatus(rowIndex, tag, 'opening', { url: finalUrl });
+
+  try {
+    const tab = await createTab(finalUrl);
+    const loaded = await waitForTabComplete(tab.id, config.timeout_ms);
+
+    if (!loaded) {
+      logMessage(`Tab ${tab.id} did not finish loading within timeout.`, 'warn', {
+        tabId: tab.id,
+        rowIndex,
+        tag
+      });
+    }
+
+    await sleep(config.wait_before_click_ms);
+
+    const result = await attemptClickInTab(tab.id, config);
+    const status = result.success ? 'success' : 'failed';
+
+    sendStatus(rowIndex, tag, status, { message: result.message });
+  } catch (e) {
+    logMessage(`Error processing tag ${tag}: ${e?.message}`, 'error', { tag, rowIndex });
+    sendStatus(rowIndex, tag, 'failed', { message: e?.message });
+  }
+
+  await sleep(config.open_interval_ms);
+};
+
+const processRow = async (row, rowIndex, mapping, config) => {
+  if (runState.stopRequested) {
+    logMessage('Stop requested — aborting run', 'warn');
+    return false;
+  }
+
+  const productCode = row.productCode || row.productCode === 0 ? String(row.productCode) : '';
+  const uploadedMockupUrl = row.uploaded_mockup;
+
+  logMessage(`Processing row ${rowIndex + 1}: ${productCode}`, 'info', {
+    rowIndex,
+    productCode
+  });
+
+  const customId = extractCustomId(uploadedMockupUrl);
+  if (!customId) {
+    sendStatus(rowIndex, null, 'skipped', { reason: 'missing_customG_0' });
+    return true;
+  }
+
+  const tags = parseTags(row.Tags);
+
+  for (const tag of tags) {
+    if (runState.stopRequested) return false;
+
+    const baseUrl = mapping[tag];
+    if (!baseUrl) {
+      logMessage(`Tag mapping missing for ${tag}. Skipping.`, 'warn', { tag, rowIndex });
+      sendStatus(rowIndex, tag, 'skipped', { reason: 'missing_tag_mapping' });
+      continue;
+    }
+
+    await processTag(tag, baseUrl, customId, rowIndex, config);
+  }
+
+  return true;
+};
+
+const startRun = async ({ rows, mapping }) => {
+  const config = DEFAULT_CONFIG;
+  logMessage('Run started', 'info');
+
+  for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
+    const shouldContinue = await processRow(rows[rowIndex], rowIndex, mapping, config);
+    if (!shouldContinue) break;
+  }
+
+  logMessage('Run completed', 'info');
 };

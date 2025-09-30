@@ -1,122 +1,144 @@
 /**
  * content.js
- * Runs in page context. Attempts to locate the Download button with multiple fallbacks,
- * clicks it, handles potential modal flows (best-effort), and writes result to window.__placeit_click_result
+ * Locates and clicks the Download button using multiple fallback strategies.
+ * Result is written to window.__placeit_click_result for the background script to read.
  */
 
 (() => {
-  const findBySelectorList = () => {
-    const selectors = [
-      'button.button.primary.download-button.subscribed-user.show',
-      'button.download-button',
-      'div.download-button-wrapper button'
-    ];
+  const DOWNLOAD_BUTTON_SELECTORS = [
+    'button.button.primary.download-button.subscribed-user.show',
+    'button.download-button',
+    'div.download-button-wrapper button'
+  ];
 
-    return selectors.map(sel => document.querySelector(sel)).find(el => el) || null;
+  const DOWNLOAD_TEXT_PATTERNS = ['download', 'download now', 'download file'];
+  const BUTTON_WAIT_TIMEOUT_MS = 15000;
+  const MODAL_WAIT_MS = 1200;
+
+  const setClickResult = (success, message) => {
+    window.__placeit_click_result = { success, message };
   };
 
-  const findByText = () => {
-    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_ELEMENT, null, false);
-    while(walker.nextNode()) {
+  const findElementBySelectors = (selectors) => {
+    return selectors
+      .map(selector => document.querySelector(selector))
+      .find(element => element) || null;
+  };
+
+  const findElementByText = (textPatterns) => {
+    const walker = document.createTreeWalker(
+      document.body,
+      NodeFilter.SHOW_ELEMENT
+    );
+
+    while (walker.nextNode()) {
       const node = walker.currentNode;
       try {
         const text = node.innerText?.trim().toLowerCase();
-        if(text === 'download' || text === 'download now' || text === 'download file') return node;
-      } catch(e) {}
+        if (textPatterns.includes(text)) return node;
+      } catch (e) {
+        // Continue searching if error occurs
+      }
     }
     return null;
   };
 
-  const findDownloadButton = () => document.querySelector('button.download-button');
+  const findDownloadButton = () => {
+    return findElementBySelectors(DOWNLOAD_BUTTON_SELECTORS) ||
+           findElementByText(DOWNLOAD_TEXT_PATTERNS);
+  };
 
-  const waitForButton = (timeoutMs) => {
+  const observeForElement = (findFunction, timeoutMs) => {
     return new Promise((resolve) => {
-      const existing = findBySelectorList() || findByText();
-      if(existing) return resolve(existing);
+      const existing = findFunction();
+      if (existing) return resolve(existing);
 
-      const mo = new MutationObserver(() => {
-        const found = findBySelectorList() || findByText();
-        if(found) {
-          mo.disconnect();
+      const observer = new MutationObserver(() => {
+        const found = findFunction();
+        if (found) {
+          observer.disconnect();
           resolve(found);
         }
       });
-      mo.observe(document, { childList: true, subtree: true, attributes: true });
-      setTimeout(() => {
-        mo.disconnect();
-        resolve(null);
-      }, timeoutMs || 15000);
-    });
-  };
 
-  const waitForDownloadButton = (timeoutMs) => {
-    return new Promise((resolve) => {
-      const existing = findDownloadButton();
-      if(existing) return resolve(existing);
-      const mo = new MutationObserver(() => {
-        const found = findDownloadButton();
-        if(found) {
-          mo.disconnect();
-          resolve(found);
-        }
+      observer.observe(document, {
+        childList: true,
+        subtree: true,
+        attributes: true
       });
-      mo.observe(document, { childList: true, subtree: true, attributes: true });
+
       setTimeout(() => {
-        mo.disconnect();
+        observer.disconnect();
         resolve(null);
-      }, timeoutMs || 15000);
+      }, timeoutMs);
     });
   };
 
-  const attemptClickFlow = async () => {
+  const waitForDownloadButton = (timeoutMs = BUTTON_WAIT_TIMEOUT_MS) => {
+    return observeForElement(findDownloadButton, timeoutMs);
+  };
+
+  const scrollIntoViewSafely = (element) => {
     try {
-      const btn = await waitForButton(15000);
-      if(!btn) {
-        window.__placeit_click_result = { success: false, message: 'download_button_not_found' };
+      element.scrollIntoView({ block: 'center', inline: 'center' });
+    } catch (e) {
+      // Scrolling failed, but we can still try to click
+    }
+  };
+
+  const findModalDownloadButton = () => {
+    return Array.from(document.querySelectorAll('button'))
+      .find(button => {
+        try {
+          const text = button.innerText?.trim().toLowerCase();
+          return text?.includes('download');
+        } catch (e) {
+          return false;
+        }
+      }) || null;
+  };
+
+  const clickElementSafely = (element) => {
+    try {
+      element.click();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  };
+
+  const handleModalFlow = async () => {
+    await new Promise(resolve => setTimeout(resolve, MODAL_WAIT_MS));
+    const modalButton = findModalDownloadButton();
+    if (modalButton) {
+      clickElementSafely(modalButton);
+    }
+  };
+
+  const attemptDownload = async () => {
+    try {
+      const button = await waitForDownloadButton();
+
+      if (!button) {
+        setClickResult(false, 'download_button_not_found');
         return;
       }
 
-      // make clickable
-      try { btn.scrollIntoView({ block: 'center', inline: 'center' }); } catch(e){}
-      // Attempt click
-      btn.click();
+      scrollIntoViewSafely(button);
+      const clicked = clickElementSafely(button);
 
-      // Wait for possible modal/popups - best-effort attempt to find confirm button
-      await new Promise(res => setTimeout(res, 1200));
-      // try again to find any button that says 'Download' inside modal
-      const confirm = Array.from(document.querySelectorAll('button'))
-        .filter(b => {
-          try{
-            const txt = b.innerText?.trim().toLowerCase();
-            return txt?.includes('download');
-          }catch(e){ return false; }
-        })[0] || null;
-
-      if(confirm) {
-        try { confirm.click(); } catch(e){}
+      if (!clicked) {
+        setClickResult(false, 'click_failed');
+        return;
       }
 
-      window.__placeit_click_result = { success: true, message: 'clicked' };
-    } catch(e) {
-      window.__placeit_click_result = { success: false, message: e?.message };
-    }
-  };
+      await handleModalFlow();
+      setClickResult(true, 'download_initiated');
 
-  const clickDownloadButton = async () => {
-    const btn = await waitForDownloadButton(15000);
-    if (!btn) {
-      window.__placeit_click_result = { success: false, message: 'download_button_not_found' };
-      return;
-    }
-    try {
-      btn.click();
-      console.log("About to click Button:", btn);
-      window.__placeit_click_result = { success: true, message: 'download_button_clicked' };
     } catch (e) {
-      window.__placeit_click_result = { success: false, message: 'download_button_click_failed' };
+      setClickResult(false, e?.message || 'unknown_error');
     }
   };
 
-  attemptClickFlow();
-  clickDownloadButton();
+  attemptDownload();
 })();

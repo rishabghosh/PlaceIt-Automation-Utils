@@ -1,23 +1,32 @@
-// utility functions (if needed)
+/**
+ * utils.js
+ * URL manipulation utilities for query parameters
+ */
+
 const extractQueryParam = (url, key) => {
   try {
-    const u = new URL(url);
-    return u.searchParams.get(key);
-  } catch(e) {
+    const urlObject = new URL(url);
+    return urlObject.searchParams.get(key);
+  } catch (e) {
     return null;
   }
 };
 
 const addOrReplaceParam = (url, key, value) => {
   try {
-    const u = new URL(url);
-    u.searchParams.set(key, value);
-    return u.toString();
-  } catch(e) {
-    // fallback
-    if(url.indexOf('?') === -1) return url + '?' + encodeURIComponent(key) + '=' + encodeURIComponent(value);
-    return url + '&' + encodeURIComponent(key) + '=' + encodeURIComponent(value);
+    const urlObject = new URL(url);
+    urlObject.searchParams.set(key, value);
+    return urlObject.toString();
+  } catch (e) {
+    return buildFallbackUrl(url, key, value);
   }
+};
+
+const buildFallbackUrl = (url, key, value) => {
+  const encodedKey = encodeURIComponent(key);
+  const encodedValue = encodeURIComponent(value);
+  const separator = url.includes('?') ? '&' : '?';
+  return `${url}${separator}${encodedKey}=${encodedValue}`;
 };
 
 export { extractQueryParam, addOrReplaceParam };

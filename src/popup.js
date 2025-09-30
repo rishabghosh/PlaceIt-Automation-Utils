@@ -1,104 +1,227 @@
 /**
  * popup.js
- * Lightweight UI for prototype: reads pasted CSV, mapping JSON, config JSON, and sends run to background.
+ * UI for the extension popup:
+ * - Loads mapping JSON
+ * - Parses pasted row data
+ * - Sends run commands to background script
+ * - Displays logs and status updates
  */
 
-const log = (msg) => {
-  const el = document.getElementById('log');
-  const p = document.createElement('div');
-  p.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
-  el.prepend(p);
+const MAPPING_FILE_PATH = 'src/mapping_sample.json';
+
+// DOM element IDs
+const ELEMENTS = {
+  log: 'log',
+  jsonRowsInput: 'jsonRowsInput',
+  mappingInput: 'mappingInput',
+  startBtn: 'startBtn',
+  stopBtn: 'stopBtn',
+  previewBtn: 'previewBtn'
 };
 
-// Load mapping_sample.json on extension load
-fetch(chrome.runtime.getURL('src/mapping_sample.json'))
-  .then(res => res.json())
-  .then(data => {
-    document.getElementById('mappingInput').value = JSON.stringify(data, null, 2);
-  })
-  .catch(() => {});
+// Logging utilities
+const createLogEntry = (message) => {
+  const entry = document.createElement('div');
+  const timestamp = new Date().toLocaleTimeString();
+  entry.textContent = `[${timestamp}] ${message}`;
+  return entry;
+};
 
-// function to parse pasted JSON from textarea
-const getPastedRows = () => {
-  const val = document.getElementById('jsonRowsInput').value.trim();
-  if (!val) return [];
+const log = (message) => {
+  const logContainer = document.getElementById(ELEMENTS.log);
+  const entry = createLogEntry(message);
+  logContainer.prepend(entry);
+};
+
+// Data parsing utilities
+const parseJSON = (jsonString) => {
   try {
-    const arr = JSON.parse(val);
-    if (!Array.isArray(arr)) throw new Error('JSON must be an array');
-    return arr;
+    return { success: true, data: JSON.parse(jsonString) };
   } catch (e) {
-    log('Error parsing pasted JSON: ' + e.message);
+    return { success: false, error: e.message };
+  }
+};
+
+const validateArray = (data) => {
+  if (!Array.isArray(data)) {
+    throw new Error('JSON must be an array');
+  }
+  return data;
+};
+
+const getPastedRows = () => {
+  const input = document.getElementById(ELEMENTS.jsonRowsInput).value.trim();
+  if (!input) return [];
+
+  const parseResult = parseJSON(input);
+  if (!parseResult.success) {
+    log(`Error parsing pasted JSON: ${parseResult.error}`);
+    return [];
+  }
+
+  try {
+    return validateArray(parseResult.data);
+  } catch (e) {
+    log(e.message);
     return [];
   }
 };
 
-// Start button click handler
-document.getElementById('startBtn').addEventListener('click', () => {
-  try {
-    const uploadedRows = getPastedRows();
-    if (!uploadedRows.length) { log('No rows loaded from pasted JSON'); return; }
-    const mapping = JSON.parse(document.getElementById('mappingInput').value);
-    chrome.runtime.sendMessage({ action: 'startRun', payload: { rows: uploadedRows, mapping } }, (resp) => {
-      if(resp && resp.ok) {
-        log('Run started');
-      } else {
-        log('Failed to start run: ' + (resp && resp.error));
-      }
-    });
-  } catch(e) {
-    log('Error: ' + e.message);
-  }
-});
+const getMappingConfig = () => {
+  const input = document.getElementById(ELEMENTS.mappingInput).value;
+  return parseJSON(input);
+};
 
-// Stop button click handler
-document.getElementById('stopBtn').addEventListener('click', () => {
-  chrome.runtime.sendMessage({ action: 'stopRun' }, (resp) => {
-    log('Stop requested');
+// Chrome message utilities
+const sendMessageToBackground = (action, payload = {}) => {
+  return new Promise((resolve) => {
+    chrome.runtime.sendMessage({ action, payload }, (response) => {
+      resolve(response);
+    });
   });
-});
+};
 
-// Preview button click handler
-document.getElementById('previewBtn').addEventListener('click', () => {
+// Tag normalization utilities
+const normalizeTagsToArray = (tags) => {
+  if (Array.isArray(tags)) {
+    return tags.map(tag => String(tag).trim()).filter(Boolean);
+  }
+
+  if (typeof tags === 'string') {
+    return tags.split(',').map(tag => tag.trim()).filter(Boolean);
+  }
+
+  return [];
+};
+
+const extractCustomParam = (url) => {
+  return new URL(url).searchParams.get('customG_0');
+};
+
+const buildPreviewUrl = (baseUrl, customParam) => {
   try {
-    const uploadedRows = getPastedRows();
-    if (!uploadedRows.length) { log('No rows loaded'); return; }
-    const mapping = JSON.parse(document.getElementById('mappingInput').value);
-    const first = uploadedRows[0];
-    const custom = (new URL(first.uploaded_mockup)).searchParams.get('customG_0');
-    let tags = first.Tags;
-    if (Array.isArray(tags)) {
-      tags = tags.map(t => String(t).trim()).filter(Boolean);
-    } else if (typeof tags === 'string') {
-      tags = tags.split(',').map(t => t.trim()).filter(Boolean);
-    } else {
-      tags = [];
-    }
-    const assembled = tags.map(t => {
-      let base = mapping[t] || '[MISSING]';
-      try {
-        const u = new URL(base);
-        u.searchParams.delete('customG_0');
-        u.searchParams.set('customG_0', custom);
-        return u.toString();
-      } catch(e) {
-        return base + (base.includes('?') ? '&' : '?') + 'customG_0=' + custom;
-      }
-    });
-    log('Preview URLs:\n' + assembled.join('\n'));
-  } catch(e) {
+    const url = new URL(baseUrl);
+    url.searchParams.delete('customG_0');
+    url.searchParams.set('customG_0', customParam);
+    return url.toString();
+  } catch (e) {
+    const separator = baseUrl.includes('?') ? '&' : '?';
+    return `${baseUrl}${separator}customG_0=${customParam}`;
+  }
+};
+
+const generatePreviewUrls = (firstRow, mapping) => {
+  const customParam = extractCustomParam(firstRow.uploaded_mockup);
+  const tags = normalizeTagsToArray(firstRow.Tags);
+
+  return tags.map(tag => {
+    const baseUrl = mapping[tag] || '[MISSING]';
+    return buildPreviewUrl(baseUrl, customParam);
+  });
+};
+
+// Button handlers
+const handleStartClick = async () => {
+  const rows = getPastedRows();
+  if (!rows.length) {
+    log('No rows loaded from pasted JSON');
+    return;
+  }
+
+  const mappingResult = getMappingConfig();
+  if (!mappingResult.success) {
+    log('Error parsing mapping: ' + mappingResult.error);
+    return;
+  }
+
+  const response = await sendMessageToBackground('startRun', {
+    rows,
+    mapping: mappingResult.data
+  });
+
+  if (response?.ok) {
+    log('Run started');
+  } else {
+    log('Failed to start run: ' + (response?.error || 'Unknown error'));
+  }
+};
+
+const handleStopClick = async () => {
+  await sendMessageToBackground('stopRun');
+  log('Stop requested');
+};
+
+const handlePreviewClick = () => {
+  const rows = getPastedRows();
+  if (!rows.length) {
+    log('No rows loaded');
+    return;
+  }
+
+  const mappingResult = getMappingConfig();
+  if (!mappingResult.success) {
+    log('Preview error: ' + mappingResult.error);
+    return;
+  }
+
+  try {
+    const previewUrls = generatePreviewUrls(rows[0], mappingResult.data);
+    log('Preview URLs:\n' + previewUrls.join('\n'));
+  } catch (e) {
     log('Preview error: ' + e.message);
   }
-});
+};
 
-// receive runtime messages (logs/status) from background
-chrome.runtime.onMessage.addListener((msg) => {
-  if(msg.action === 'log') {
-    log(msg.message);
-  } else if(msg.action === 'status') {
-    log(`STATUS row ${msg.rowIndex+1 || '?'} tag ${msg.tag || ''}: ${msg.status} ${msg.message ? ' - '+msg.message : ''}`);
-  } else if(msg.action === 'runFinished') {
-    log('Run finished');
-  } else if(msg.action === 'runError') {
-    log('Run error: ' + (msg.error || 'unknown'));
+// Message handlers from background
+const handleLogMessage = (message) => {
+  log(message);
+};
+
+const handleStatusMessage = (msg) => {
+  const rowNum = msg.rowIndex + 1 || '?';
+  const tag = msg.tag || '';
+  const extraInfo = msg.message ? ' - ' + msg.message : '';
+  log(`STATUS row ${rowNum} tag ${tag}: ${msg.status}${extraInfo}`);
+};
+
+const handleRunFinished = () => {
+  log('Run finished');
+};
+
+const handleRunError = (error) => {
+  log('Run error: ' + (error || 'unknown'));
+};
+
+// Initialize event listeners
+const initializeEventListeners = () => {
+  document.getElementById(ELEMENTS.startBtn).addEventListener('click', handleStartClick);
+  document.getElementById(ELEMENTS.stopBtn).addEventListener('click', handleStopClick);
+  document.getElementById(ELEMENTS.previewBtn).addEventListener('click', handlePreviewClick);
+
+  chrome.runtime.onMessage.addListener((msg) => {
+    if (msg.action === 'log') {
+      handleLogMessage(msg.message);
+    } else if (msg.action === 'status') {
+      handleStatusMessage(msg);
+    } else if (msg.action === 'runFinished') {
+      handleRunFinished();
+    } else if (msg.action === 'runError') {
+      handleRunError(msg.error);
+    }
+  });
+};
+
+// Load mapping file on startup
+const loadMappingSample = async () => {
+  try {
+    const response = await fetch(chrome.runtime.getURL(MAPPING_FILE_PATH));
+    const data = await response.json();
+    document.getElementById(ELEMENTS.mappingInput).value = JSON.stringify(data, null, 2);
+  } catch (e) {
+    // Silently fail if mapping file doesn't exist
   }
-});
+};
+
+// Initialize application
+loadMappingSample();
+initializeEventListeners();
