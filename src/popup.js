@@ -21,7 +21,7 @@ let defaultConfig = {
 };
 
 // Load mapping_sample.json on extension load
-fetch(chrome.runtime.getURL('mapping_sample.json'))
+fetch(chrome.runtime.getURL('src/mapping_sample.json'))
   .then(res => res.json())
   .then(data => {
     document.getElementById('mappingInput').value = JSON.stringify(data, null, 2);

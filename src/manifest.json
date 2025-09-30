@@ -1,0 +1,40 @@
+{
+  "manifest_version": 3,
+  "name": "Placeit Bulk Mockup Downloader",
+  "version": "0.1.0",
+  "description": "Bulk-opens Placeit mockups, injects uploaded design ID, clicks Download, and closes tabs.",
+  "permissions": [
+    "tabs",
+    "scripting",
+    "storage",
+    "downloads"
+  ],
+  "host_permissions": [
+    "https://placeit.net/*"
+  ],
+  "action": {
+    "default_popup": "src/popup.html",
+    "default_title": "Placeit Bulk Mockup"
+  },
+  "background": {
+    "service_worker": "src/background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://placeit.net/*"],
+      "js": ["src/content.js"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["src/content.js", "src/mapping_sample.json"],
+      "matches": ["https://placeit.net/*", "<all_urls>"]
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
