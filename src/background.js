@@ -114,7 +114,7 @@ const injectClickScript = (tabId) => {
         'div.download-button-wrapper button'
       ];
 
-      const DOWNLOAD_TEXT_PATTERNS = ['download', 'download now', 'download file'];
+      const DOWNLOAD_TEXT_PATTERNS = ['download'];
 
       const setClickResult = (success, message) => {
         window.__placeit_click_result = { success, message };

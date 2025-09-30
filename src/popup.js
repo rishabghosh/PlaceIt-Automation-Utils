@@ -6,7 +6,8 @@ const ELEMENTS = {
   mappingInput: 'mappingInput',
   startBtn: 'startBtn',
   stopBtn: 'stopBtn',
-  previewBtn: 'previewBtn'
+  previewBtn: 'previewBtn',
+  downloadSampleBtn: 'downloadSampleBtn'
 };
 
 const createLogEntry = (message) => {
@@ -157,6 +158,27 @@ const handlePreviewClick = () => {
   }
 };
 
+const handleDownloadSampleClick = async () => {
+  try {
+    const response = await fetch(chrome.runtime.getURL('src/samples/rows_sample.json'));
+    const sampleData = await response.json();
+
+    const jsonString = JSON.stringify(sampleData, null, 2);
+    const blob = new Blob([jsonString], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'rows_sample.json';
+    a.click();
+
+    URL.revokeObjectURL(url);
+    log('Sample JSON downloaded');
+  } catch (e) {
+    log('Error downloading sample: ' + e.message);
+  }
+};
+
 const handleLogMessage = (message) => {
   log(message);
 };
@@ -180,6 +202,7 @@ const initializeEventListeners = () => {
   document.getElementById(ELEMENTS.startBtn).addEventListener('click', handleStartClick);
   document.getElementById(ELEMENTS.stopBtn).addEventListener('click', handleStopClick);
   document.getElementById(ELEMENTS.previewBtn).addEventListener('click', handlePreviewClick);
+  document.getElementById(ELEMENTS.downloadSampleBtn).addEventListener('click', handleDownloadSampleClick);
 
   chrome.runtime.onMessage.addListener((msg) => {
     if (msg.action === 'log') {

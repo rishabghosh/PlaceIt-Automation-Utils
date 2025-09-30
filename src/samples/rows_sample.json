@@ -1,0 +1,12 @@
+[
+  {
+    "productCode": "CSAW0006.png",
+    "uploaded_mockup": "https://example.com/mockup?customG_0=sample123",
+    "Tags": ["OM-AA-1", "OF-AA-1"]
+  },
+  {
+    "productCode": "CSAW0007.png",
+    "uploaded_mockup": "https://example.com/mockup?customG_0=sample456",
+    "Tags": ["OM-AA-2", "OF-AA-2"]
+  }
+]
