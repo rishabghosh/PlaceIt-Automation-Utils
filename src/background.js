@@ -349,10 +349,17 @@ const processRow = async (row, rowIndex, mapping, config) => {
   for (const tag of tags) {
     if (runState.stopRequested) return false;
 
-    const baseUrl = mapping[tag];
-    if (!baseUrl) {
+    const mappingEntry = mapping[tag];
+    if (!mappingEntry) {
       logMessage(`Tag mapping missing for ${tag}. Skipping.`, 'warn', { tag, rowIndex });
       sendStatus(rowIndex, tag, 'skipped', { reason: 'missing_tag_mapping' });
+      continue;
+    }
+
+    const baseUrl = typeof mappingEntry === 'string' ? mappingEntry : mappingEntry.mockupUrl;
+    if (!baseUrl) {
+      logMessage(`Tag mapping URL missing for ${tag}. Skipping.`, 'warn', { tag, rowIndex });
+      sendStatus(rowIndex, tag, 'skipped', { reason: 'missing_mockup_url' });
       continue;
     }
 

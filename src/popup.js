@@ -102,7 +102,10 @@ const generatePreviewUrls = (firstRow, mapping) => {
   const tags = normalizeTagsToArray(firstRow.Tags);
 
   return tags.map(tag => {
-    const baseUrl = mapping[tag] || '[MISSING]';
+    const mappingEntry = mapping[tag];
+    const baseUrl = mappingEntry
+      ? (typeof mappingEntry === 'string' ? mappingEntry : mappingEntry.mockupUrl)
+      : '[MISSING]';
     return buildPreviewUrl(baseUrl, customParam);
   });
 };

@@ -1,28 +1,226 @@
 {
-  "OM-Serious-Black-F-1": "https://placeit.net/c/mockups/stages/mockup-of-a-man-wearing-a-wide-t-shirt-at-a-studio-m26233/editor?colorFolder_Shirt%20Color=%23000000&colorFolder_Cubes%20Color=%23c0c0c0&colorFolder_Hat%20Color=%23841e0d",
-  "OM-Serious-Black-F-2": "https://placeit.net/c/mockups/stages/mockup-of-a-serious-man-wearing-an-oversized-tee-and-a-dad-hat-at-a-studio-m26647/editor?colorFolder_Cubes%20Color=%23F5CFAD&colorFolder_Shirt%20Color=%23000000&colorFolder_Hat%20Color=%23cfdaff",
-  "OM-Serious-Black-B-1": "https://placeit.net/c/mockups/stages/back-view-mockup-of-a-man-wearing-an-oversized-tee-m26648/editor?colorFolder_Hat%20Color=%23e5e5e5&colorFolder_Cubes%20Color=%23756266&colorFolder_Shirt%20Color=%23000000",
-  "OM-Cool-Young-F-1": "https://placeit.net/c/mockups/stages/mockup-of-a-man-wearing-a-cool-oversized-t-shirt-m26207/editor?colorFolder_Cubes%20Color%20=%23A59585&colorFolder_Shirt%20Color=%23000000",
-  "OM-Cool-Young-B-1": "https://placeit.net/c/mockups/stages/back-view-mockup-of-a-young-gamer-wearing-an-oversized-tee-m28456/editor?colorFolder_Shirt%20Color=%23000000",
-  "OM-Funny-Black-F-1": "https://placeit.net/c/mockups/stages/oversized-t-shirt-mockup-featuring-a-man-with-a-surprised-expression-posing-in-a-studio-m56523/editor?colorFolder_Shirt%20Color=%23000000&colorFolder_Background=%23c0c0c0",
-  "OM-Funny-Black-B-1": "https://placeit.net/c/mockups/stages/oversized-t-shirt-mockup-featuring-a-man-posing-backwards-in-a-studio-m56524/editor?colorFolder_Shirt%20Color=%23000000&colorFolder_Background=%23c0c0c0",
+  "OM-Serious-Black-F-1": {
+    "mockupUrl": "https://placeit.net/c/mockups/stages/mockup-of-a-man-wearing-a-wide-t-shirt-at-a-studio-m26233/editor?colorFolder_Shirt%20Color=%23000000&colorFolder_Cubes%20Color=%23c0c0c0&colorFolder_Hat%20Color=%23841e0d",
+    "downloadedName": "mockup-of-a-man-wearing-a-wide-t-shirt-at-a-studio-m26233",
+    "crop": {
+      "height": 0,
+      "width": 0,
+      "x": 0,
+      "y": 0
+    }
+  },
+  "OM-Serious-Black-F-2": {
+    "mockupUrl": "https://placeit.net/c/mockups/stages/mockup-of-a-serious-man-wearing-an-oversized-tee-and-a-dad-hat-at-a-studio-m26647/editor?colorFolder_Cubes%20Color=%23F5CFAD&colorFolder_Shirt%20Color=%23000000&colorFolder_Hat%20Color=%23cfdaff",
+    "downloadedName": "mockup-of-a-serious-man-wearing-an-oversized-tee-and-a-dad-hat-at-a-studio-m26647",
+    "crop": {
+      "height": 0,
+      "width": 0,
+      "x": 0,
+      "y": 0
+    }
+  },
+  "OM-Serious-Black-B-1": {
+    "mockupUrl": "https://placeit.net/c/mockups/stages/back-view-mockup-of-a-man-wearing-an-oversized-tee-m26648/editor?colorFolder_Hat%20Color=%23e5e5e5&colorFolder_Cubes%20Color=%23756266&colorFolder_Shirt%20Color=%23000000",
+    "downloadedName": "back-view-mockup-of-a-man-wearing-an-oversized-tee-m26648",
+    "crop": {
+      "height": 0,
+      "width": 0,
+      "x": 0,
+      "y": 0
+    }
+  },
+  "OM-Cool-Young-F-1": {
+    "mockupUrl": "https://placeit.net/c/mockups/stages/mockup-of-a-man-wearing-a-cool-oversized-t-shirt-m26207/editor?colorFolder_Cubes%20Color%20=%23A59585&colorFolder_Shirt%20Color=%23000000",
+    "downloadedName": "mockup-of-a-man-wearing-a-cool-oversized-t-shirt-m26207",
+    "crop": {
+      "height": 0,
+      "width": 0,
+      "x": 0,
+      "y": 0
+    }
+  },
+  "OM-Cool-Young-B-1": {
+    "mockupUrl": "https://placeit.net/c/mockups/stages/back-view-mockup-of-a-young-gamer-wearing-an-oversized-tee-m28456/editor?colorFolder_Shirt%20Color=%23000000",
+    "downloadedName": "back-view-mockup-of-a-young-gamer-wearing-an-oversized-tee-m28456",
+    "crop": {
+      "height": 0,
+      "width": 0,
+      "x": 0,
+      "y": 0
+    }
+  },
+  "OM-Funny-Black-F-1": {
+    "mockupUrl": "https://placeit.net/c/mockups/stages/oversized-t-shirt-mockup-featuring-a-man-with-a-surprised-expression-posing-in-a-studio-m56523/editor?colorFolder_Shirt%20Color=%23000000&colorFolder_Background=%23c0c0c0",
+    "downloadedName": "oversized-t-shirt-mockup-featuring-a-man-with-a-surprised-expression-posing-in-a-studio-m56523",
+    "crop": {
+      "height": 0,
+      "width": 0,
+      "x": 0,
+      "y": 0
+    }
+  },
+  "OM-Funny-Black-B-1": {
+    "mockupUrl": "https://placeit.net/c/mockups/stages/oversized-t-shirt-mockup-featuring-a-man-posing-backwards-in-a-studio-m56524/editor?colorFolder_Shirt%20Color=%23000000&colorFolder_Background=%23c0c0c0",
+    "downloadedName": "oversized-t-shirt-mockup-featuring-a-man-posing-backwards-in-a-studio-m56524",
+    "crop": {
+      "height": 0,
+      "width": 0,
+      "x": 0,
+      "y": 0
+    }
+  },
 
-  "RM-Indian-Shy-F-1": "https://placeit.net/c/mockups/stages/crewneck-t-shirt-mockup-featuring-a-man-with-a-trendy-haircut-28951/editor?colorFolder_Background=%23c0c0c0&colorFolder_Shirt%20Color=%23000000",
-  "RM-Skinny-Indian-F-1": "https://placeit.net/c/mockups/stages/mockup-of-a-man-standing-in-a-studio-wearing-a-round-neck-scott-international-tee-m37762/editor?colorFolder_Shirt%20Color=%23000000&colorFolder_Background=%23c0c0c0",
-  "RM-Skinny-Indian-B-1": "https://placeit.net/c/mockups/stages/back-view-scott-international-t-shirt-mockup-featuring-a-man-in-a-studio-m37763/editor?colorFolder_Shirt%20Color=%23000000&colorFolder_Background=%23c0c0c0",
-  "RM-Happy-Black-F-1": "https://placeit.net/c/mockups/stages/transparent-mockup-featuring-a-happy-man-wearing-a-round-neck-tee-21082/editor?colorFolder_Background=%23c0c0c0&colorFolder_Shirt%20Color=%23000000",
-  "RM-Happy-Black-B-1": "https://placeit.net/c/mockups/stages/back-view-transparent-tee-mockup-of-a-man-with-a-short-haircut-21083/editor?colorFolder_Background=%23c0c0c0&colorFolder_Shirt%20Color=%23000000",
-  "RM-Gamer-F-1": "https://placeit.net/c/mockups/stages/mockup-of-a-gamer-wearing-a-bella-canvas-t-shirt-and-headphones-m28449/editor?colorFolder_Shirt%20Color=%23000000",
+  "RM-Indian-Shy-F-1": {
+    "mockupUrl": "https://placeit.net/c/mockups/stages/crewneck-t-shirt-mockup-featuring-a-man-with-a-trendy-haircut-28951/editor?colorFolder_Background=%23c0c0c0&colorFolder_Shirt%20Color=%23000000",
+    "downloadedName": "crewneck-t-shirt-mockup-featuring-a-man-with-a-trendy-haircut-28951",
+    "crop": {
+      "height": 0,
+      "width": 0,
+      "x": 0,
+      "y": 0
+    }
+  },
+  "RM-Skinny-Indian-F-1": {
+    "mockupUrl": "https://placeit.net/c/mockups/stages/mockup-of-a-man-standing-in-a-studio-wearing-a-round-neck-scott-international-tee-m37762/editor?colorFolder_Shirt%20Color=%23000000&colorFolder_Background=%23c0c0c0",
+    "downloadedName": "mockup-of-a-man-standing-in-a-studio-wearing-a-round-neck-scott-international-tee-m37762",
+    "crop": {
+      "height": 0,
+      "width": 0,
+      "x": 0,
+      "y": 0
+    }
+  },
+  "RM-Skinny-Indian-B-1": {
+    "mockupUrl": "https://placeit.net/c/mockups/stages/back-view-scott-international-t-shirt-mockup-featuring-a-man-in-a-studio-m37763/editor?colorFolder_Shirt%20Color=%23000000&colorFolder_Background=%23c0c0c0",
+    "downloadedName": "back-view-scott-international-t-shirt-mockup-featuring-a-man-in-a-studio-m37763",
+    "crop": {
+      "height": 0,
+      "width": 0,
+      "x": 0,
+      "y": 0
+    }
+  },
+  "RM-Happy-Black-F-1": {
+    "mockupUrl": "https://placeit.net/c/mockups/stages/transparent-mockup-featuring-a-happy-man-wearing-a-round-neck-tee-21082/editor?colorFolder_Background=%23c0c0c0&colorFolder_Shirt%20Color=%23000000",
+    "downloadedName": "transparent-mockup-featuring-a-happy-man-wearing-a-round-neck-tee-21082",
+    "crop": {
+      "height": 0,
+      "width": 0,
+      "x": 0,
+      "y": 0
+    }
+  },
+  "RM-Happy-Black-B-1": {
+    "mockupUrl": "https://placeit.net/c/mockups/stages/back-view-transparent-tee-mockup-of-a-man-with-a-short-haircut-21083/editor?colorFolder_Background=%23c0c0c0&colorFolder_Shirt%20Color=%23000000",
+    "downloadedName": "back-view-transparent-tee-mockup-of-a-man-with-a-short-haircut-21083",
+    "crop": {
+      "height": 0,
+      "width": 0,
+      "x": 0,
+      "y": 0
+    }
+  },
+  "RM-Gamer-F-1": {
+    "mockupUrl": "https://placeit.net/c/mockups/stages/mockup-of-a-gamer-wearing-a-bella-canvas-t-shirt-and-headphones-m28449/editor?colorFolder_Shirt%20Color=%23000000",
+    "downloadedName": "mockup-of-a-gamer-wearing-a-bella-canvas-t-shirt-and-headphones-m28449",
+    "crop": {
+      "height": 0,
+      "width": 0,
+      "x": 0,
+      "y": 0
+    }
+  },
 
-  "OF-Indian-Stylish-F-1": "https://placeit.net/c/mockups/stages/oversized-round-neck-tee-mockup-featuring-a-woman-standing-against-a-colorful-backdrop-m53034/editor?colorFolder_Background=%23c0c0c0&colorFolder_Shirt%20Color=%23000000",
-  "OF-Indian-Stylish-F-2": "https://placeit.net/c/mockups/stages/oversized-t-shirt-mockup-featuring-a-woman-with-cool-glasses-posing-with-her-hands-on-her-waist-m53033/editor?colorFolder_Shirt%20Color=%23000000&colorFolder_Background=%23c0c0c0",
-  "OF-Indian-Stylish-B-1": "https://placeit.net/c/mockups/stages/back-view-mockup-of-a-woman-pointing-at-her-oversized-t-shirt-in-a-studio-m53036/editor?colorFolder_Background=%23c0c0c0&colorFolder_Shirt%20Color=%23000000",
+  "OF-Indian-Stylish-F-1": {
+    "mockupUrl": "https://placeit.net/c/mockups/stages/oversized-round-neck-tee-mockup-featuring-a-woman-standing-against-a-colorful-backdrop-m53034/editor?colorFolder_Background=%23c0c0c0&colorFolder_Shirt%20Color=%23000000",
+    "downloadedName": "oversized-round-neck-tee-mockup-featuring-a-woman-standing-against-a-colorful-backdrop-m53034",
+    "crop": {
+      "height": 0,
+      "width": 0,
+      "x": 0,
+      "y": 0
+    }
+  },
+  "OF-Indian-Stylish-F-2": {
+    "mockupUrl": "https://placeit.net/c/mockups/stages/oversized-t-shirt-mockup-featuring-a-woman-with-cool-glasses-posing-with-her-hands-on-her-waist-m53033/editor?colorFolder_Shirt%20Color=%23000000&colorFolder_Background=%23c0c0c0",
+    "downloadedName": "oversized-t-shirt-mockup-featuring-a-woman-with-cool-glasses-posing-with-her-hands-on-her-waist-m53033",
+    "crop": {
+      "height": 0,
+      "width": 0,
+      "x": 0,
+      "y": 0
+    }
+  },
+  "OF-Indian-Stylish-B-1": {
+    "mockupUrl": "https://placeit.net/c/mockups/stages/back-view-mockup-of-a-woman-pointing-at-her-oversized-t-shirt-in-a-studio-m53036/editor?colorFolder_Background=%23c0c0c0&colorFolder_Shirt%20Color=%23000000",
+    "downloadedName": "back-view-mockup-of-a-woman-pointing-at-her-oversized-t-shirt-in-a-studio-m53036",
+    "crop": {
+      "height": 0,
+      "width": 0,
+      "x": 0,
+      "y": 0
+    }
+  },
 
-  "RF-Hardcore-F-1": "https://placeit.net/c/mockups/stages/mockup-of-a-woman-with-a-tattooed-woman-wearing-a-bella-canvas-t-shirt-m32785/editor?colorFolder_Shirt%20Color=%23000000&colorFolder_Pants%20Color=%23e9af5d&colorFolder_Background=%23c0c0c0",
-  "RF-Hardcore-B-1": "https://placeit.net/c/mockups/stages/back-view-bella-canvas-t-shirt-mockup-featuring-a-woman-in-a-studio-m32788/editor?colorFolder_Shirt%20Color=%23000000&colorFolder_Background=%23c0c0c0&colorFolder_Pants%20Color=%23e9af5d",
-  "RF-Super-Skinny-F-1": "https://placeit.net/c/mockups/stages/bella-canvas-tee-mockup-of-a-woman-posing-casually-in-a-studio-m29390/editor?colorFolder_Shirt%20Color=%23000000&colorFolder_Background=%23c0c0c0",
-  "RF-Super-Skinny-B-1": "https://placeit.net/c/mockups/stages/back-view-t-shirt-mockup-featuring-a-woman-with-dark-hair-m29392/editor?colorFolder_Shirt%20Color=%23000000&colorFolder_Background=%23c0c0c0",
-  "RF-Cute-F-1": "https://placeit.net/c/mockups/stages/mockup-of-a-woman-on-a-shopping-cart-wearing-a-unisex-tee-23043/editor?colorFolder_Shirt%20Color=%23000000",
-  "RF-Cute-F-2": "https://placeit.net/c/mockups/stages/unisex-tee-mockup-of-a-woman-in-a-mall-parking-lot-23066/editor?colorFolder_Shirt%20Color=%23000000"
+  "RF-Hardcore-F-1": {
+    "mockupUrl": "https://placeit.net/c/mockups/stages/mockup-of-a-woman-with-a-tattooed-woman-wearing-a-bella-canvas-t-shirt-m32785/editor?colorFolder_Shirt%20Color=%23000000&colorFolder_Pants%20Color=%23e9af5d&colorFolder_Background=%23c0c0c0",
+    "downloadedName": "mockup-of-a-woman-with-a-tattooed-woman-wearing-a-bella-canvas-t-shirt-m32785",
+    "crop": {
+      "height": 0,
+      "width": 0,
+      "x": 0,
+      "y": 0
+    }
+  },
+  "RF-Hardcore-B-1": {
+    "mockupUrl": "https://placeit.net/c/mockups/stages/back-view-bella-canvas-t-shirt-mockup-featuring-a-woman-in-a-studio-m32788/editor?colorFolder_Shirt%20Color=%23000000&colorFolder_Background=%23c0c0c0&colorFolder_Pants%20Color=%23e9af5d",
+    "downloadedName": "back-view-bella-canvas-t-shirt-mockup-featuring-a-woman-in-a-studio-m32788",
+    "crop": {
+      "height": 0,
+      "width": 0,
+      "x": 0,
+      "y": 0
+    }
+  },
+  "RF-Super-Skinny-F-1": {
+    "mockupUrl": "https://placeit.net/c/mockups/stages/bella-canvas-tee-mockup-of-a-woman-posing-casually-in-a-studio-m29390/editor?colorFolder_Shirt%20Color=%23000000&colorFolder_Background=%23c0c0c0",
+    "downloadedName": "bella-canvas-tee-mockup-of-a-woman-posing-casually-in-a-studio-m29390",
+    "crop": {
+      "height": 0,
+      "width": 0,
+      "x": 0,
+      "y": 0
+    }
+  },
+  "RF-Super-Skinny-B-1": {
+    "mockupUrl": "https://placeit.net/c/mockups/stages/back-view-t-shirt-mockup-featuring-a-woman-with-dark-hair-m29392/editor?colorFolder_Shirt%20Color=%23000000&colorFolder_Background=%23c0c0c0",
+    "downloadedName": "back-view-t-shirt-mockup-featuring-a-woman-with-dark-hair-m29392",
+    "crop": {
+      "height": 0,
+      "width": 0,
+      "x": 0,
+      "y": 0
+    }
+  },
+  "RF-Cute-F-1": {
+    "mockupUrl": "https://placeit.net/c/mockups/stages/mockup-of-a-woman-on-a-shopping-cart-wearing-a-unisex-tee-23043/editor?colorFolder_Shirt%20Color=%23000000",
+    "downloadedName": "mockup-of-a-woman-on-a-shopping-cart-wearing-a-unisex-tee-23043",
+    "crop": {
+      "height": 0,
+      "width": 0,
+      "x": 0,
+      "y": 0
+    }
+  },
+  "RF-Cute-F-2": {
+    "mockupUrl": "https://placeit.net/c/mockups/stages/unisex-tee-mockup-of-a-woman-in-a-mall-parking-lot-23066/editor?colorFolder_Shirt%20Color=%23000000",
+    "downloadedName": "unisex-tee-mockup-of-a-woman-in-a-mall-parking-lot-23066",
+    "crop": {
+      "height": 0,
+      "width": 0,
+      "x": 0,
+      "y": 0
+    }
+  }
 
 }
