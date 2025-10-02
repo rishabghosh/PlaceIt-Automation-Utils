@@ -11,8 +11,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Configuration
-const IMAGES_DIR = process.env.IMAGES_DIR || './downloads'; // Directory where images are stored
-const MAPPING_FILE = process.env.MAPPING_FILE || './src/mapping_sample.json';
+const IMAGES_DIR = process.env.IMAGES_DIR
+const MAPPING_FILE = process.env.MAPPING_FILE
 
 /**
  * Processes a single image: crops it (if needed) and renames it

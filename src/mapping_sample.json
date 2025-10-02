@@ -20,32 +20,32 @@
   "OM-Cool-Young-F-1": {
     "mockupUrl": "https://placeit.net/c/mockups/stages/mockup-of-a-man-wearing-a-cool-oversized-t-shirt-m26207/editor?colorFolder_Cubes%20Color%20=%23A59585&colorFolder_Shirt%20Color=%23000000",
     "downloadedName": "mockup-of-a-man-wearing-a-cool-oversized-t-shirt-m26207",
-    "crop": {"height": 0, "width": 0, "x": 0, "y": 0},
+    "crop": {"height": 1045, "width": 1045, "x": 302, "y": 86},
     "renameTo": "oversized_male_front.png"
   },
   "OM-Cool-Young-B-1": {
     "mockupUrl": "https://placeit.net/c/mockups/stages/back-view-mockup-of-a-young-gamer-wearing-an-oversized-tee-m28456/editor?colorFolder_Shirt%20Color=%23000000",
     "downloadedName": "back-view-mockup-of-a-young-gamer-wearing-an-oversized-tee-m28456",
-    "crop": {"height": 0, "width": 0, "x": 0, "y": 0},
+    "crop": {"height": 1440, "width": 1440, "x": 0, "y": 87},
     "renameTo": "oversized_male_back.png"
   },
   "OM-Funny-Black-F-1": {
     "mockupUrl": "https://placeit.net/c/mockups/stages/oversized-t-shirt-mockup-featuring-a-man-with-a-surprised-expression-posing-in-a-studio-m56523/editor?colorFolder_Shirt%20Color=%23000000&colorFolder_Background=%23c0c0c0",
     "downloadedName": "oversized-t-shirt-mockup-featuring-a-man-with-a-surprised-expression-posing-in-a-studio-m56523",
-    "crop": {"height": 0, "width": 0, "x": 0, "y": 0},
+    "crop": {"height": 2000, "width": 2000, "x": 0, "y": 224},
     "renameTo": "oversized_male_front.png"
   },
   "OM-Funny-Black-B-1": {
     "mockupUrl": "https://placeit.net/c/mockups/stages/oversized-t-shirt-mockup-featuring-a-man-posing-backwards-in-a-studio-m56524/editor?colorFolder_Shirt%20Color=%23000000&colorFolder_Background=%23c0c0c0",
     "downloadedName": "oversized-t-shirt-mockup-featuring-a-man-posing-backwards-in-a-studio-m56524",
-    "crop": {"height": 0, "width": 0, "x": 0, "y": 0},
+    "crop": {"height": 2000, "width": 2000, "x": 0, "y": 235},
     "renameTo": "oversized_male_back.png"
   },
 
   "RM-Indian-Shy-F-1": {
     "mockupUrl": "https://placeit.net/c/mockups/stages/crewneck-t-shirt-mockup-featuring-a-man-with-a-trendy-haircut-28951/editor?colorFolder_Background=%23c0c0c0&colorFolder_Shirt%20Color=%23000000",
     "downloadedName": "crewneck-t-shirt-mockup-featuring-a-man-with-a-trendy-haircut-28951",
-    "crop": {"height": 1440, "width": 1440, "x": 0, "y": 83},
+    "crop": {"height": 1440, "width": 1440, "x": 0, "y": 76},
     "renameTo": "regular_male_front.png"
   },
   "RM-Skinny-Indian-F-1": {
