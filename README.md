@@ -150,6 +150,52 @@ Map each tag to a base Placeit mockup URL (without `customG_0`):
 6. **Click Start** to begin bulk downloads
 7. Monitor progress in the log window
 
+### 4. Crop and Rename Downloaded Images
+
+After downloading mockups, you can automatically crop and rename them based on the mapping configuration.
+
+**Setup:**
+
+1. **Copy the environment example file:**
+   ```bash
+   cp .env.example .env
+   ```
+
+2. **Configure image processing settings in `.env`:**
+   ```env
+   # Image Processing Configuration
+   IMAGES_DIR=./downloads          # Directory where images are stored
+   MAPPING_FILE=./src/mapping_sample.json  # Path to your mapping file
+   ```
+
+3. **Update your mapping JSON** with crop and rename configurations:
+   ```json
+   {
+     "tag-name": {
+       "mockupUrl": "https://placeit.net/...",
+       "downloadedName": "original-placeit-filename",
+       "crop": {"height": 1440, "width": 1440, "x": 0, "y": 190},
+       "renameTo": "your-desired-filename"
+     }
+   }
+   ```
+
+   **Crop Configuration:**
+   - `height`, `width`: Dimensions of the cropped area
+   - `x`, `y`: Starting position (top-left corner) for the crop
+   - Set `width` and `height` to `0` to skip cropping for that image
+
+4. **Run the crop and rename script:**
+   ```bash
+   node crop-and-rename.js
+   ```
+
+The script will:
+- Find images by their `downloadedName` (supports .jpg, .jpeg, .png)
+- Apply crop settings (if configured)
+- Rename files to the `renameTo` value
+- Replace the original files in the same directory
+
 ## Data Format
 
 ### CSV Structure

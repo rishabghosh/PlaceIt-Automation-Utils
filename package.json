@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "crop": "node crop-and-rename.js"
   },
   "repository": {
     "type": "git",
@@ -23,5 +24,9 @@
     "@crxjs/vite-plugin": "^2.2.0",
     "@types/chrome": "^0.1.14",
     "vite": "^7.1.7"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "sharp": "^0.34.4"
   }
 }
