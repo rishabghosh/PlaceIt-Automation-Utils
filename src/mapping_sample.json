@@ -39,14 +39,14 @@
     "downloadedName": "oversized-t-shirt-mockup-featuring-a-man-with-a-surprised-expression-posing-in-a-studio-m56523",
     "crop": {"height": 2000, "width": 2000, "x": 0, "y": 224},
     "renameTo": "oversized_male_front",
-    "narrowMockupContainer": true
+    "narrowMockupContainer": false
   },
   "OM-Funny-Black-B-1": {
     "mockupUrl": "https://placeit.net/c/mockups/stages/oversized-t-shirt-mockup-featuring-a-man-posing-backwards-in-a-studio-m56524/editor?colorFolder_Shirt%20Color=%23000000&colorFolder_Background=%23c0c0c0",
     "downloadedName": "oversized-t-shirt-mockup-featuring-a-man-posing-backwards-in-a-studio-m56524",
     "crop": {"height": 2000, "width": 2000, "x": 0, "y": 235},
     "renameTo": "oversized_male_back",
-    "narrowMockupContainer": false
+    "narrowMockupContainer": true
   },
   "OM-Taking-Off-F-1": {
     "mockupUrl": "https://placeit.net/c/mockups/stages/mockup-of-a-man-taking-off-his-oversized-t-shirt-in-a-studio-setting-m57443/editor?colorFolder_Background=%23c0c0c0&colorFolder_Shirt%20Color=%23000000",
