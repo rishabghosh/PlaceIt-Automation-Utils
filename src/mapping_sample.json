@@ -44,13 +44,13 @@
   "OM-Taking-Off-F-1": {
     "mockupUrl": "https://placeit.net/c/mockups/stages/mockup-of-a-man-taking-off-his-oversized-t-shirt-in-a-studio-setting-m57443/editor?colorFolder_Background=%23c0c0c0&colorFolder_Shirt%20Color=%23000000",
     "downloadedName": "mockup-of-a-man-taking-off-his-oversized-t-shirt-in-a-studio-setting-m57443",
-    "crop": {"height": 0, "width": 0, "x": 0, "y": 0},
+    "crop": {"height": 1600, "width": 1600, "x": 210, "y": 318},
     "renameTo": "oversized_male_front"
   },
   "OM-Taking-Off-B-1": {
     "mockupUrl": "https://placeit.net/c/mockups/stages/back-view-comfort-colors-mockup-of-a-man-wearing-a-t-shirt-in-a-studio-m57434/editor?colorFolder_Background=%23c0c0c0&colorFolder_Shirt%20Color=%23000000",
     "downloadedName": "back-view-comfort-colors-mockup-of-a-man-wearing-a-t-shirt-in-a-studio-m57434",
-    "crop": {"height": 0, "width": 0, "x": 0, "y": 0},
+    "crop": {"height": 2000, "width": 2000, "x": 0, "y": 177},
     "renameTo": "oversized_male_back"
   },
 
@@ -100,25 +100,25 @@
   "RM-Bun-Tattoo-F-1": {
     "mockupUrl": "https://placeit.net/c/mockups/stages/transparent-mockup-of-a-tattooed-man-wearing-a-t-shirt-and-shades-32813/editor?colorFolder_Background=%23c0c0c0&colorFolder_Shirt%20Color=%23000000",
     "downloadedName": "transparent-mockup-of-a-tattooed-man-wearing-a-t-shirt-and-shades-32813",
-    "crop": {"height": 0, "width": 0, "x": 0, "y": 0},
+    "crop": {"height": 1440, "width": 1440, "x": 0, "y": 222},
     "renameTo": "regular_male_front"
   },
   "RM-Bun-Tattoo-B-1": {
     "mockupUrl": "https://placeit.net/c/mockups/stages/transparent-back-view-mockup-of-a-man-with-a-head-bun-wearing-a-t-shirt-32814/editor?colorFolder_Background=%23c0c0c0&colorFolder_Shirt%20Color=%23000000",
     "downloadedName": "transparent-back-view-mockup-of-a-man-with-a-head-bun-wearing-a-t-shirt-32814",
-    "crop": {"height": 0, "width": 0, "x": 0, "y": 0},
+    "crop": {"height": 1440, "width": 1440, "x": 0, "y": 339},
     "renameTo": "regular_male_back"
   },
   "RM-Curly-Hair-F-1": {
     "mockupUrl": "https://placeit.net/c/mockups/stages/transparent-round-neck-tee-mockup-of-a-young-man-with-red-hair-21187/editor?colorFolder_Background=%23c0c0c0&colorFolder_Shirt%20Color=%23000000",
     "downloadedName": "transparent-round-neck-tee-mockup-of-a-young-man-with-red-hair-21187",
-    "crop": {"height": 0, "width": 0, "x": 0, "y": 0},
+    "crop": {"height": 1200, "width": 1200, "x": 362, "y": 45},
     "renameTo": "regular_male_front"
   },
   "RM-Curly-Hair-B-1": {
     "mockupUrl": "https://placeit.net/c/mockups/stages/transparent-t-shirt-mockup-of-a-man-with-red-hair-21188/editor?colorFolder_Background=%23c0c0c0&colorFolder_Shirt%20Color=%23000000",
     "downloadedName": "transparent-t-shirt-mockup-of-a-man-with-red-hair-21188",
-    "crop": {"height": 0, "width": 0, "x": 0, "y": 0},
+    "crop": {"height": 1200, "width": 1200, "x": 362, "y": 68},
     "renameTo": "regular_male_back"
   },
 
@@ -162,13 +162,13 @@
   "OF-Old-Caucasian-F-1": {
     "mockupUrl": "https://placeit.net/c/mockups/stages/oversized-crewneck-t-shirt-mockup-of-a-woman-standing-in-a-studio-m38933/editor?colorFolder_Background=%23c0c0c0&colorFolder_Shirt%20Color=%23000000",
     "downloadedName": "oversized-crewneck-t-shirt-mockup-of-a-woman-standing-in-a-studio-m38933",
-    "crop": {"height": 0, "width": 0, "x": 0, "y": 0},
+    "crop": {"height": 2000, "width": 2000, "x": 0, "y": 89},
     "renameTo": "oversized_female_front"
   },
   "OF-Old-Caucasian-B-1": {
     "mockupUrl": "https://placeit.net/c/mockups/stages/back-view-t-shirt-mockup-of-a-woman-posing-against-a-customizable-backdrop-in-a-studio-m38932/editor?colorFolder_Background=%23c0c0c0&colorFolder_Shirt%20Color=%23000000",
     "downloadedName": "back-view-t-shirt-mockup-of-a-woman-posing-against-a-customizable-backdrop-in-a-studio-m38932",
-    "crop": {"height": 0, "width": 0, "x": 0, "y": 0},
+    "crop": {"height": 2000, "width": 2000, "x": 0, "y": 315},
     "renameTo": "oversized_female_back"
   },
 
@@ -206,43 +206,25 @@
   "RF-Facepalm-F-1": {
     "mockupUrl": "https://placeit.net/c/mockups/stages/bella-canvas-t-shirt-mockup-of-a-woman-covering-her-face-with-her-hand-in-a-studio-m38535/editor?colorFolder_Background=%23c0c0c0&colorFolder_Shirt%20Color=%23000000",
     "downloadedName": "bella-canvas-t-shirt-mockup-of-a-woman-covering-her-face-with-her-hand-in-a-studio-m38535",
-    "crop": {"height": 0, "width": 0, "x": 0, "y": 0},
+    "crop": {"height": 2000, "width": 2000, "x": 0, "y": 146},
     "renameTo": "regular_female_front"
   },
   "RF-Facepalm-B-1": {
     "mockupUrl": "https://placeit.net/c/mockups/stages/back-view-bella-canvas-tee-mockup-of-a-woman-standing-in-a-customizable-background-m38536/editor?colorFolder_Background=%23c0c0c0&colorFolder_Shirt%20Color=%23000000",
     "downloadedName": "back-view-bella-canvas-tee-mockup-of-a-woman-standing-in-a-customizable-background-m38536",
-    "crop": {"height": 0, "width": 0, "x": 0, "y": 0},
-    "renameTo": "regular_female_back"
-  },
-  "RF-Brunette-F-1": {
-    "mockupUrl": "https://placeit.net/c/mockups/stages/transparent-t-shirt-mockup-of-a-young-woman-4448-el1/editor?colorFolder_Background=%23c0c0c0&colorFolder_Shirt%20Color%20=%23000000",
-    "downloadedName": "transparent-t-shirt-mockup-of-a-young-woman-4448-el1",
-    "crop": {"height": 0, "width": 0, "x": 0, "y": 0},
-    "renameTo": "regular_female_front"
-  },
-  "RF-Brunette-F-2": {
-    "mockupUrl": "https://placeit.net/c/mockups/stages/transparent-t-shirt-mockup-of-a-woman-playing-with-her-hair-4444-el1/editor?colorFolder_Background=%23c0c0c0&colorFolder_Shirt%20Color%20=%23000000",
-    "downloadedName": "transparent-t-shirt-mockup-of-a-woman-playing-with-her-hair-4444-el1",
-    "crop": {"height": 0, "width": 0, "x": 0, "y": 0},
-    "renameTo": "regular_female_front"
-  },
-  "RF-Brunette-B-1": {
-    "mockupUrl": "https://placeit.net/c/mockups/stages/transparent-t-shirt-mockup-featuring-a-young-woman-walking-away-2762-el1/editor?colorFolder_Background=%23c0c0c0&colorFolder_Shirt%20Color=%23000000",
-    "downloadedName": "transparent-t-shirt-mockup-featuring-a-young-woman-walking-away-2762-el1",
-    "crop": {"height": 0, "width": 0, "x": 0, "y": 0},
+    "crop": {"height": 2000, "width": 2000, "x": 0, "y": 257},
     "renameTo": "regular_female_back"
   },
   "RF-Ginger-F-1": {
     "mockupUrl": "https://placeit.net/c/mockups/stages/transparent-t-shirt-mockup-of-a-young-woman-in-a-plain-pose-20758/editor?colorFolder_Shirt%20Color=%23000000&colorFolder_Background=%23c0c0c0",
     "downloadedName": "transparent-t-shirt-mockup-of-a-young-woman-in-a-plain-pose-20758",
-    "crop": {"height": 0, "width": 0, "x": 0, "y": 0},
+    "crop": {"height": 1020, "width": 1020, "x": 451, "y": 94},
     "renameTo": "regular_female_front"
   },
   "RF-Ginger-B-1": {
     "mockupUrl": "https://placeit.net/c/mockups/stages/transparent-t-shirt-mockup-featuring-the-back-of-a-red-haired-woman-20748/editor?colorFolder_Background=%23c0c0c0&colorFolder_Shirt%20Color=%23000000",
     "downloadedName": "transparent-t-shirt-mockup-featuring-the-back-of-a-red-haired-woman-20748",
-    "crop": {"height": 0, "width": 0, "x": 0, "y": 0},
+    "crop": {"height": 1000, "width": 1000, "x": 429, "y": 180},
     "renameTo": "regular_female_back"
   }
 }
