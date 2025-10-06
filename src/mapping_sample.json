@@ -88,13 +88,13 @@
   "RM-Japanese-F-1": {
     "mockupUrl": "https://placeit.net/c/mockups/stages/bella-canvas-tee-mockup-featuring-a-man-in-a-studio-with-his-hands-on-his-back-m40236/editor?colorFolder_Shirt%20Color=%23000000&colorFolder_Background=%23c0c0c0",
     "downloadedName": "bella-canvas-tee-mockup-featuring-a-man-in-a-studio-with-his-hands-on-his-back-m40236",
-    "crop": {"height": 0, "width": 0, "x": 0, "y": 0},
+    "crop": {"height": 1400, "width": 1400, "x": 304, "y": 167},
     "renameTo": "regular_male_front"
   },
   "RM-Japanese-B-1": {
     "mockupUrl": "https://placeit.net/c/mockups/stages/back-view-bella-canvas-mockup-of-a-man-posing-in-a-studio-wearing-a-t-shirt-m40243/editor?colorFolder_Background=%23cecece&colorFolder_Shirt%20Color=%23000000",
     "downloadedName": "back-view-bella-canvas-mockup-of-a-man-posing-in-a-studio-wearing-a-t-shirt-m40243",
-    "crop": {"height": 0, "width": 0, "x": 0, "y": 0},
+    "crop": {"height": 2000, "width": 2000, "x": 0, "y": 329},
     "renameTo": "regular_male_back"
   },
   "RM-Bun-Tattoo-F-1": {
@@ -124,9 +124,9 @@
 
 
   "OF-Skinny-Teen-F-1": {
-    "mockupUrl": "https://placeit.net/c/mockups/stages/tee-mockup-of-a-woman-sitting-on-a-cube-at-a-studio-m26156/editor?colorFolder_Cubes%20Color=%23c0c0c0&colorFolder_Shirt%20Color=%23000000",
+    "mockupUrl": "https://placeit.net/c/mockups/stages/tee-mockup-of-a-woman-sitting-on-a-cube-at-a-studio-m26156/editor?colorFolder_Cubes%20Color=%23c0c0c0&colorFolder_Shirt%20Color=%23000000&customG_0=t3p1oo906d",
     "downloadedName": "tee-mockup-of-a-woman-sitting-on-a-cube-at-a-studio-m26156",
-    "crop": {"height": 0, "width": 0, "x": 0, "y": 0},
+    "crop": {"height": 1440, "width": 1440, "x": 0, "y": 65},
     "renameTo": "oversized_female_front"
   },
   "OF-Indian-Stylish-F-1": {
@@ -176,7 +176,7 @@
   "RF-Cute-F-1": {
     "mockupUrl": "https://placeit.net/c/mockups/stages/transparent-unisex-tee-mockup-of-a-serious-young-woman-with-hoop-earrings-23041/editor?colorFolder_Shirt%20Color=%23000000&colorFolder_Background=%23c0c0c0",
     "downloadedName": "transparent-unisex-tee-mockup-of-a-serious-young-woman-with-hoop-earrings-23041",
-    "crop": {"height": 0, "width": 0, "x": 0, "y": 0},
+    "crop": {"height": 1200, "width": 1200, "x": 393, "y": 168},
     "renameTo": "regular_female_front"
   },
   "RF-Hardcore-F-1": {
