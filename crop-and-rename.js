@@ -41,37 +41,37 @@ async function processImage(downloadedName, config) {
       return;
     }
 
+    // Prepare output paths
+    const outputDir = path.join(IMAGES_DIR, 'raw');
+    await fs.mkdir(outputDir, { recursive: true });
+    const outputFileName = `${config.renameTo}${ext}`;
+    const rawPath = path.join(outputDir, outputFileName);
+    const croppedPath = path.join(IMAGES_DIR, outputFileName);
+    const tempCroppedPath = path.join(IMAGES_DIR, `_temp_${outputFileName}`);
+
+    // Move and rename the original image to raw folder
+    await fs.rename(inputPath, rawPath);
+    console.log(`✅ Moved and renamed original: ${downloadedName} → raw/${config.renameTo}`);
+
     // Check if crop config is valid
     const shouldCrop = config.crop.width > 0 && config.crop.height > 0;
 
-    // Prepare output path (same directory, new name)
-    const outputFileName = `${config.renameTo}${ext}`;
-    const outputPath = path.join(IMAGES_DIR, outputFileName);
-    const tempPath = path.join(IMAGES_DIR, `_temp_${outputFileName}`);
-
     if (shouldCrop) {
-      // Crop and save to temp file first
-      await sharp(inputPath)
+      // Crop from raw image and save to IMAGES_DIR
+      await sharp(rawPath)
         .extract({
           left: config.crop.x,
           top: config.crop.y,
           width: config.crop.width,
           height: config.crop.height
         })
-        .toFile(tempPath);
-
-      // Delete original file
-      await fs.unlink(inputPath);
-
-      // Rename temp file to final name
-      await fs.rename(tempPath, outputPath);
-
-      console.log(`✅ Cropped and renamed: ${downloadedName} → ${config.renameTo}`);
+        .toFile(tempCroppedPath);
+      await fs.rename(tempCroppedPath, croppedPath);
+      console.log(`✅ Cropped: raw/${config.renameTo} → ${config.renameTo}`);
     } else {
-      // Just rename (no crop needed)
-      await fs.rename(inputPath, outputPath);
-
-      console.log(`✅ Renamed (no crop): ${downloadedName} → ${config.renameTo}`);
+      // Just copy the raw image to IMAGES_DIR (no crop)
+      await fs.copyFile(rawPath, croppedPath);
+      console.log(`✅ Copied (no crop): raw/${config.renameTo} → ${config.renameTo}`);
     }
   } catch (error) {
     console.error(`❌ Error processing ${downloadedName}:`, error.message);
@@ -85,7 +85,11 @@ async function main() {
   try {
     // Ensure images directory exists
     await fs.mkdir(IMAGES_DIR, { recursive: true });
-    console.log(`📁 Images directory: ${IMAGES_DIR}\n`);
+    // Ensure raw directory exists
+    const rawDir = path.join(IMAGES_DIR, 'raw');
+    await fs.mkdir(rawDir, { recursive: true });
+    console.log(`📁 Images directory: ${IMAGES_DIR}`);
+    console.log(`📁 Raw directory: ${rawDir}\n`);
 
     // Load the mapping file
     const mappingData = await fs.readFile(MAPPING_FILE, 'utf-8');
