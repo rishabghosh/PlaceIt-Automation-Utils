@@ -31,6 +31,16 @@
       <button id="previewBtn">Preview first URL</button>
     </div>
 
+    <div id="progressSection" style="display:none; margin-bottom:8px;">
+      <div style="font-size:11px; margin-bottom:4px; display:flex; justify-content:space-between;">
+        <strong>Progress</strong>
+        <span id="progressText">0 / 0</span>
+      </div>
+      <div style="height:20px; background:#eee; border-radius:10px; overflow:hidden;">
+        <div id="progressBar" style="height:100%; width:0%; background:linear-gradient(90deg, #667eea 0%, #764ba2 100%); transition:width 0.3s; display:flex; align-items:center; justify-content:center; color:white; font-size:10px; font-weight:600;"></div>
+      </div>
+    </div>
+
     <h4>Log</h4>
     <div id="log"></div>
 

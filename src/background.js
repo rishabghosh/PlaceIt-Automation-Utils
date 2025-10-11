@@ -2,7 +2,9 @@ import { DEFAULT_CONFIG, TAB_CHECK_INTERVAL_MS, BUTTON_WAIT_TIMEOUT_MS, MODAL_WA
 
 const runState = {
   running: false,
-  stopRequested: false
+  stopRequested: false,
+  totalMockups: 0,
+  processedMockups: 0
 };
 
 const handleStartRun = (payload, sendResponse) => {
@@ -292,6 +294,13 @@ const createTab = (url) => {
   return chrome.tabs.create({ url, active: false });
 };
 
+const sendProgress = () => {
+  sendMessage('progress', {
+    processed: runState.processedMockups,
+    total: runState.totalMockups
+  });
+};
+
 const processTag = async (tag, baseUrl, customId, rowIndex, config) => {
   const finalUrl = buildFinalUrl(baseUrl, customId);
 
@@ -316,9 +325,17 @@ const processTag = async (tag, baseUrl, customId, rowIndex, config) => {
     const status = result.success ? 'success' : 'failed';
 
     sendStatus(rowIndex, tag, status, { message: result.message });
+
+    // Update progress
+    runState.processedMockups++;
+    sendProgress();
   } catch (e) {
     logMessage(`Error processing tag ${tag}: ${e?.message}`, 'error', { tag, rowIndex });
     sendStatus(rowIndex, tag, 'failed', { message: e?.message });
+
+    // Update progress even on failure
+    runState.processedMockups++;
+    sendProgress();
   }
 
   await sleep(config.open_interval_ms);
@@ -369,12 +386,58 @@ const processRow = async (row, rowIndex, mapping, config) => {
   return true;
 };
 
+const filterValidRows = (rows) => {
+  return rows.filter(row => {
+    const customId = extractCustomId(row.uploaded_mockup);
+    return customId !== null && customId !== undefined && customId !== '';
+  });
+};
+
+const calculateTotalMockups = (rows, mapping) => {
+  let total = 0;
+
+  for (const row of rows) {
+    const tags = parseTags(row.Tags);
+
+    for (const tag of tags) {
+      const mappingEntry = mapping[tag];
+      if (mappingEntry) {
+        const baseUrl = typeof mappingEntry === 'string' ? mappingEntry : mappingEntry.mockupUrl;
+        if (baseUrl) {
+          total++;
+        }
+      }
+    }
+  }
+
+  return total;
+};
+
 const startRun = async ({ rows, mapping }) => {
   const config = DEFAULT_CONFIG;
-  logMessage('Run started', 'info');
 
-  for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
-    const shouldContinue = await processRow(rows[rowIndex], rowIndex, mapping, config);
+  // Filter rows that have customG_0
+  const validRows = filterValidRows(rows);
+  const filteredCount = rows.length - validRows.length;
+
+  if (filteredCount > 0) {
+    logMessage(`Filtered out ${filteredCount} row(s) without customG_0 parameter`, 'info');
+  }
+
+  if (validRows.length === 0) {
+    logMessage('No valid rows to process', 'warn');
+    return;
+  }
+
+  // Calculate total mockups
+  runState.totalMockups = calculateTotalMockups(validRows, mapping);
+  runState.processedMockups = 0;
+
+  logMessage(`Run started: ${validRows.length} valid rows, ${runState.totalMockups} total mockups`, 'info');
+  sendProgress();
+
+  for (let rowIndex = 0; rowIndex < validRows.length; rowIndex++) {
+    const shouldContinue = await processRow(validRows[rowIndex], rowIndex, mapping, config);
     if (!shouldContinue) break;
   }
 

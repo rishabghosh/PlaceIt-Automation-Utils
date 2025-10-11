@@ -8,7 +8,10 @@ const ELEMENTS = {
   stopBtn: 'stopBtn',
   previewBtn: 'previewBtn',
   downloadSampleBtn: 'downloadSampleBtn',
-  fullscreenBtn: 'fullscreenBtn'
+  fullscreenBtn: 'fullscreenBtn',
+  progressSection: 'progressSection',
+  progressBar: 'progressBar',
+  progressText: 'progressText'
 };
 
 const createLogEntry = (message) => {
@@ -206,6 +209,32 @@ const handleRunError = (error) => {
   log('Run error: ' + (error || 'unknown'));
 };
 
+const handleProgressUpdate = (msg) => {
+  const { processed, total } = msg;
+
+  // Show progress section if hidden
+  const progressSection = document.getElementById(ELEMENTS.progressSection);
+  if (progressSection.style.display === 'none') {
+    progressSection.style.display = 'block';
+  }
+
+  // Update progress text
+  const progressText = document.getElementById(ELEMENTS.progressText);
+  progressText.textContent = `${processed} / ${total}`;
+
+  // Update progress bar
+  const progressBar = document.getElementById(ELEMENTS.progressBar);
+  const percentage = total > 0 ? (processed / total) * 100 : 0;
+  progressBar.style.width = `${percentage}%`;
+
+  // Show percentage inside bar if there's space
+  if (percentage > 10) {
+    progressBar.textContent = `${Math.round(percentage)}%`;
+  } else {
+    progressBar.textContent = '';
+  }
+};
+
 const initializeEventListeners = () => {
   document.getElementById(ELEMENTS.startBtn).addEventListener('click', handleStartClick);
   document.getElementById(ELEMENTS.stopBtn).addEventListener('click', handleStopClick);
@@ -218,6 +247,8 @@ const initializeEventListeners = () => {
       handleLogMessage(msg.message);
     } else if (msg.action === 'status') {
       handleStatusMessage(msg);
+    } else if (msg.action === 'progress') {
+      handleProgressUpdate(msg);
     } else if (msg.action === 'runFinished') {
       handleRunFinished();
     } else if (msg.action === 'runError') {
