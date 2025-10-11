@@ -263,5 +263,26 @@
     "crop": {"height": 1000, "width": 1000, "x": 429, "y": 180},
     "renameTo": "regular_female_back",
     "narrowMockupContainer": false
+  },
+  "RF-Gloomy-F-1": {
+    "mockupUrl": "https://placeit.net/c/mockups/stages/t-shirt-mockup-of-a-smiling-girl-at-a-studio-22333/editor?colorFolder_Shirt%20Color=%23000000&colorFolder_Background=%23c0c0c0",
+    "downloadedName": "t-shirt-mockup-of-a-smiling-girl-at-a-studio-22333",
+    "crop": {"height": 1030, "width": 1030, "x": 439, "y": 79},
+    "renameTo": "regular_female_front",
+    "narrowMockupContainer": false
+  },
+  "RF-Gloomy-F-2": {
+    "mockupUrl": "https://placeit.net/c/mockups/stages/simple-t-shirt-mockup-of-a-young-woman-standing-in-a-studio-22336/editor?colorFolder_Shirt%20Color=%23000000&colorFolder_Background=%23c0c0c0",
+    "downloadedName": "simple-t-shirt-mockup-of-a-young-woman-standing-in-a-studio-22336",
+    "crop": {"height": 1000, "width": 1000, "x": 443, "y": 103},
+    "renameTo": "regular_female_front",
+    "narrowMockupContainer": false
+  },
+  "RF-Gloomy-B-1": {
+    "mockupUrl": "https://placeit.net/c/mockups/stages/t-shirt-mockup-of-a-girl-facing-backwards-at-a-studio-22334/editor?colorFolder_Shirt%20Color=%23000000&colorFolder_Background=%23c0c0c0",
+    "downloadedName": "t-shirt-mockup-of-a-girl-facing-backwards-at-a-studio-22334",
+    "crop": {"height": 1030, "width": 1030, "x": 437, "y": 104},
+    "renameTo": "regular_female_back",
+    "narrowMockupContainer": false
   }
 }
