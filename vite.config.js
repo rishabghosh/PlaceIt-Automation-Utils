@@ -9,7 +9,8 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        popup: 'src/popup.html'
+        popup: 'src/popup.html',
+        fullscreen: 'src/fullscreen.html'
       }
     }
   }

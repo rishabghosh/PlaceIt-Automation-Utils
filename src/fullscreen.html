@@ -1,0 +1,336 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Placeit Bulk Mockup - Fullscreen</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 24px 32px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .header h1 {
+        font-size: 28px;
+        font-weight: 600;
+      }
+
+      .header-subtitle {
+        font-size: 14px;
+        opacity: 0.9;
+        margin-top: 4px;
+      }
+
+      .content {
+        padding: 32px;
+      }
+
+      .section {
+        margin-bottom: 28px;
+      }
+
+      .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+      }
+
+      label {
+        display: block;
+        font-weight: 600;
+        font-size: 14px;
+        color: #333;
+        margin-bottom: 8px;
+      }
+
+      textarea, input, select {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-family: 'Consolas', 'Monaco', monospace;
+        font-size: 13px;
+        transition: border-color 0.2s, box-shadow 0.2s;
+      }
+
+      textarea:focus, input:focus, select:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+
+      textarea {
+        resize: vertical;
+        min-height: 120px;
+      }
+
+      #jsonRowsInput {
+        min-height: 200px;
+      }
+
+      #mappingInput {
+        min-height: 180px;
+      }
+
+      .button-group {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 20px;
+      }
+
+      button {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      button:active {
+        transform: translateY(0);
+      }
+
+      #startBtn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        flex: 1;
+        min-width: 150px;
+      }
+
+      #stopBtn {
+        background: #ef4444;
+        color: white;
+        min-width: 120px;
+      }
+
+      #previewBtn {
+        background: #10b981;
+        color: white;
+        min-width: 150px;
+      }
+
+      #downloadSampleBtn {
+        background: #6b7280;
+        color: white;
+        padding: 8px 16px;
+        font-size: 12px;
+        margin-left: 12px;
+      }
+
+      .log-section {
+        margin-top: 32px;
+      }
+
+      .log-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+      }
+
+      .log-header h4 {
+        font-size: 16px;
+        color: #333;
+      }
+
+      #clearLogBtn {
+        background: #6b7280;
+        color: white;
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+
+      #log {
+        background: #1a1a1a;
+        color: #00ff00;
+        padding: 16px;
+        border-radius: 8px;
+        font-family: 'Consolas', 'Monaco', monospace;
+        font-size: 13px;
+        min-height: 300px;
+        max-height: 500px;
+        overflow-y: auto;
+        box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.5);
+      }
+
+      #log div {
+        padding: 4px 0;
+        border-bottom: 1px solid rgba(0, 255, 0, 0.1);
+      }
+
+      #log div:last-child {
+        border-bottom: none;
+      }
+
+      .status-badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: 600;
+        margin-left: 8px;
+      }
+
+      .status-success {
+        background: #10b981;
+        color: white;
+      }
+
+      .status-failed {
+        background: #ef4444;
+        color: white;
+      }
+
+      .status-opening {
+        background: #3b82f6;
+        color: white;
+      }
+
+      .status-skipped {
+        background: #6b7280;
+        color: white;
+      }
+
+      /* Scrollbar styling */
+      ::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 5px;
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 5px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+      }
+
+      #log::-webkit-scrollbar-track {
+        background: #0a0a0a;
+      }
+
+      #log::-webkit-scrollbar-thumb {
+        background: #00ff00;
+      }
+
+      @media (max-width: 768px) {
+        body {
+          padding: 10px;
+        }
+
+        .content {
+          padding: 20px;
+        }
+
+        .header {
+          padding: 20px;
+        }
+
+        .header h1 {
+          font-size: 22px;
+        }
+
+        .button-group {
+          flex-direction: column;
+        }
+
+        button {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <div>
+          <h1>Placeit Bulk Mockup Downloader</h1>
+          <div class="header-subtitle">Fullscreen Mode - Automated Bulk Processing</div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="section">
+          <div class="section-header">
+            <label>Paste JSON (rows)
+              <button id="downloadSampleBtn">📥 Download Sample</button>
+            </label>
+          </div>
+          <textarea id="jsonRowsInput" placeholder='Paste array of rows here, e.g. [
+  {
+    "productCode": "CSAW0006.png",
+    "uploaded_mockup": "https://placeit.net/c/...",
+    "Tags": ["OM-AA-1", "OF-AA-1"]
+  }
+]'></textarea>
+        </div>
+
+        <div class="section">
+          <label>Tag → Base URL mapping (JSON)</label>
+          <textarea id="mappingInput">{
+
+}</textarea>
+        </div>
+
+        <div class="button-group">
+          <button id="startBtn">▶ Start Processing</button>
+          <button id="stopBtn">⏹ Stop</button>
+          <button id="previewBtn">👁 Preview First URL</button>
+        </div>
+
+        <div class="log-section">
+          <div class="log-header">
+            <h4>Processing Log</h4>
+            <button id="clearLogBtn">Clear Log</button>
+          </div>
+          <div id="log"></div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="fullscreen.js"></script>
+  </body>
+</html>

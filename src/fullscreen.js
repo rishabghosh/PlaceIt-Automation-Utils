@@ -8,20 +8,36 @@ const ELEMENTS = {
   stopBtn: 'stopBtn',
   previewBtn: 'previewBtn',
   downloadSampleBtn: 'downloadSampleBtn',
-  fullscreenBtn: 'fullscreenBtn'
+  clearLogBtn: 'clearLogBtn'
 };
 
-const createLogEntry = (message) => {
+const createLogEntry = (message, statusClass = '') => {
   const entry = document.createElement('div');
   const timestamp = new Date().toLocaleTimeString();
-  entry.textContent = `[${timestamp}] ${message}`;
+
+  if (statusClass) {
+    const badge = `<span class="status-badge ${statusClass}">${statusClass.replace('status-', '').toUpperCase()}</span>`;
+    entry.innerHTML = `[${timestamp}] ${message} ${badge}`;
+  } else {
+    entry.textContent = `[${timestamp}] ${message}`;
+  }
+
   return entry;
 };
 
-const log = (message) => {
+const log = (message, statusClass = '') => {
   const logContainer = document.getElementById(ELEMENTS.log);
-  const entry = createLogEntry(message);
+  const entry = createLogEntry(message, statusClass);
   logContainer.prepend(entry);
+
+  // Auto-scroll to top to show newest entry
+  logContainer.scrollTop = 0;
+};
+
+const clearLog = () => {
+  const logContainer = document.getElementById(ELEMENTS.log);
+  logContainer.innerHTML = '';
+  log('Log cleared');
 };
 
 const parseJSON = (jsonString) => {
@@ -45,14 +61,14 @@ const getPastedRows = () => {
 
   const parseResult = parseJSON(input);
   if (!parseResult.success) {
-    log(`Error parsing pasted JSON: ${parseResult.error}`);
+    log(`Error parsing pasted JSON: ${parseResult.error}`, 'status-failed');
     return [];
   }
 
   try {
     return validateArray(parseResult.data);
   } catch (e) {
-    log(e.message);
+    log(e.message, 'status-failed');
     return [];
   }
 };
@@ -83,7 +99,11 @@ const normalizeTagsToArray = (tags) => {
 };
 
 const extractCustomParam = (url) => {
-  return new URL(url).searchParams.get('customG_0');
+  try {
+    return new URL(url).searchParams.get('customG_0');
+  } catch (e) {
+    return null;
+  }
 };
 
 const buildPreviewUrl = (baseUrl, customParam) => {
@@ -114,13 +134,13 @@ const generatePreviewUrls = (firstRow, mapping) => {
 const handleStartClick = async () => {
   const rows = getPastedRows();
   if (!rows.length) {
-    log('No rows loaded from pasted JSON');
+    log('No rows loaded from pasted JSON', 'status-failed');
     return;
   }
 
   const mappingResult = getMappingConfig();
   if (!mappingResult.success) {
-    log('Error parsing mapping: ' + mappingResult.error);
+    log('Error parsing mapping: ' + mappingResult.error, 'status-failed');
     return;
   }
 
@@ -130,35 +150,38 @@ const handleStartClick = async () => {
   });
 
   if (response?.ok) {
-    log('Run started');
+    log('Run started - Processing ' + rows.length + ' rows', 'status-success');
   } else {
-    log('Failed to start run: ' + (response?.error || 'Unknown error'));
+    log('Failed to start run: ' + (response?.error || 'Unknown error'), 'status-failed');
   }
 };
 
 const handleStopClick = async () => {
   await sendMessageToBackground('stopRun');
-  log('Stop requested');
+  log('Stop requested', 'status-skipped');
 };
 
 const handlePreviewClick = () => {
   const rows = getPastedRows();
   if (!rows.length) {
-    log('No rows loaded');
+    log('No rows loaded', 'status-failed');
     return;
   }
 
   const mappingResult = getMappingConfig();
   if (!mappingResult.success) {
-    log('Preview error: ' + mappingResult.error);
+    log('Preview error: ' + mappingResult.error, 'status-failed');
     return;
   }
 
   try {
     const previewUrls = generatePreviewUrls(rows[0], mappingResult.data);
-    log('Preview URLs:\n' + previewUrls.join('\n'));
+    log('Preview URLs for first row:', 'status-success');
+    previewUrls.forEach((url, idx) => {
+      log(`  ${idx + 1}. ${url}`);
+    });
   } catch (e) {
-    log('Preview error: ' + e.message);
+    log('Preview error: ' + e.message, 'status-failed');
   }
 };
 
@@ -177,14 +200,10 @@ const handleDownloadSampleClick = async () => {
     a.click();
 
     URL.revokeObjectURL(url);
-    log('Sample JSON downloaded');
+    log('Sample JSON downloaded', 'status-success');
   } catch (e) {
-    log('Error downloading sample: ' + e.message);
+    log('Error downloading sample: ' + e.message, 'status-failed');
   }
-};
-
-const handleFullscreenClick = () => {
-  chrome.tabs.create({ url: chrome.runtime.getURL('src/fullscreen.html') });
 };
 
 const handleLogMessage = (message) => {
@@ -195,15 +214,33 @@ const handleStatusMessage = (msg) => {
   const rowNum = msg.rowIndex + 1 || '?';
   const tag = msg.tag || '';
   const extraInfo = msg.message ? ' - ' + msg.message : '';
-  log(`STATUS row ${rowNum} tag ${tag}: ${msg.status}${extraInfo}`);
+  const statusText = `Row ${rowNum} | Tag: ${tag} | ${msg.status}${extraInfo}`;
+
+  let statusClass = '';
+  switch(msg.status.toLowerCase()) {
+    case 'success':
+      statusClass = 'status-success';
+      break;
+    case 'failed':
+      statusClass = 'status-failed';
+      break;
+    case 'opening':
+      statusClass = 'status-opening';
+      break;
+    case 'skipped':
+      statusClass = 'status-skipped';
+      break;
+  }
+
+  log(statusText, statusClass);
 };
 
 const handleRunFinished = () => {
-  log('Run finished');
+  log('Run finished - All rows processed', 'status-success');
 };
 
 const handleRunError = (error) => {
-  log('Run error: ' + (error || 'unknown'));
+  log('Run error: ' + (error || 'unknown'), 'status-failed');
 };
 
 const initializeEventListeners = () => {
@@ -211,7 +248,7 @@ const initializeEventListeners = () => {
   document.getElementById(ELEMENTS.stopBtn).addEventListener('click', handleStopClick);
   document.getElementById(ELEMENTS.previewBtn).addEventListener('click', handlePreviewClick);
   document.getElementById(ELEMENTS.downloadSampleBtn).addEventListener('click', handleDownloadSampleClick);
-  document.getElementById(ELEMENTS.fullscreenBtn).addEventListener('click', handleFullscreenClick);
+  document.getElementById(ELEMENTS.clearLogBtn).addEventListener('click', clearLog);
 
   chrome.runtime.onMessage.addListener((msg) => {
     if (msg.action === 'log') {
@@ -231,9 +268,17 @@ const loadMappingSample = async () => {
     const response = await fetch(chrome.runtime.getURL(MAPPING_FILE_PATH));
     const data = await response.json();
     document.getElementById(ELEMENTS.mappingInput).value = JSON.stringify(data, null, 2);
+    log('Mapping configuration loaded', 'status-success');
   } catch (e) {
+    log('Could not load default mapping configuration', 'status-skipped');
   }
 };
 
-loadMappingSample();
-initializeEventListeners();
+// Initialize the fullscreen interface
+const initialize = async () => {
+  log('Fullscreen interface loaded', 'status-success');
+  await loadMappingSample();
+  initializeEventListeners();
+};
+
+initialize();

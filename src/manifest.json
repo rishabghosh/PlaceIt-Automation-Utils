@@ -22,7 +22,7 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["src/mapping_sample.json", "src/samples/rows_sample.json"],
+      "resources": ["src/mapping_sample.json", "src/samples/rows_sample.json", "src/fullscreen.html"],
       "matches": ["https://placeit.net/*", "<all_urls>"]
     }
   ],
