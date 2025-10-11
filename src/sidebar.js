@@ -86,7 +86,7 @@ const createSidebarHTML = (categories) => {
     <div id="placeit-helper-sidebar">
       <div class="sidebar-header">
         <h3>PlaceIt Helper</h3>
-        <button class="sidebar-toggle" id="sidebar-toggle">←</button>
+        <button class="sidebar-toggle" id="sidebar-toggle">→</button>
       </div>
 
       <div class="sidebar-content">
@@ -266,10 +266,12 @@ const handleToggle = () => {
 
   if (sidebar.classList.contains('collapsed')) {
     sidebar.classList.remove('collapsed');
-    toggle.textContent = '←';
+    document.body.classList.remove('sidebar-collapsed');
+    toggle.textContent = '→';
   } else {
     sidebar.classList.add('collapsed');
-    toggle.textContent = '→';
+    document.body.classList.add('sidebar-collapsed');
+    toggle.textContent = '←';
   }
 };
 
@@ -301,6 +303,9 @@ const initializeSidebar = async () => {
   link.rel = 'stylesheet';
   link.href = chrome.runtime.getURL('src/content.css');
   document.head.appendChild(link);
+
+  // Add body class to enable push layout
+  document.body.classList.add('placeit-helper-active');
 
   // Attach event listeners
   const retrieveBtn = document.getElementById('retrieve-profile-btn');

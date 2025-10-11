@@ -2,16 +2,27 @@
 #placeit-helper-sidebar {
   position: fixed;
   top: 0;
-  right: 0;
+  left: 0;
   width: 320px;
   height: 100vh;
   background: white;
-  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
   z-index: 999999;
   display: flex;
   flex-direction: column;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
   overflow: hidden;
+  transition: width 0.3s ease;
+}
+
+/* Add left padding to body when sidebar is visible */
+body.placeit-helper-active {
+  padding-left: 320px !important;
+  transition: padding-left 0.3s ease;
+}
+
+body.placeit-helper-active.sidebar-collapsed {
+  padding-left: 50px !important;
 }
 
 #placeit-helper-sidebar.collapsed {
@@ -55,6 +66,10 @@
 
 .sidebar-toggle:hover {
   background: rgba(255, 255, 255, 0.3);
+}
+
+#placeit-helper-sidebar.collapsed .sidebar-toggle {
+  transform: rotate(180deg);
 }
 
 /* Content Area */
