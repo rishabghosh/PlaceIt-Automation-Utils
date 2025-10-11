@@ -327,11 +327,11 @@
       <div id="alertContainer"></div>
 
       <div class="section">
-        <h2><span class="section-number">1</span> CSV Data</h2>
-        <label for="csvInput">Paste your CSV data or upload a CSV file:</label>
-        <textarea id="csvInput" rows="8" placeholder="productCode,uploaded_mockup,Tags&#10;P001,https://placeit.net/c/mockups/stages/crewneck-t-shirt-mockup-12345/editor?customG_0=abc123,front,black&#10;P002,https://placeit.net/c/mockups/stages/hoodie-mockup-67890/editor?customG_0=xyz789,back,white"></textarea>
+        <h2><span class="section-number">1</span> JSON Data</h2>
+        <label for="jsonInput">Paste your JSON data or upload a JSON file:</label>
+        <textarea id="jsonInput" rows="8" placeholder='[&#10;  {&#10;    "productCode": "P001",&#10;    "uploaded_mockup": "https://placeit.net/c/mockups/stages/crewneck-t-shirt-mockup-12345/editor?customG_0=abc123",&#10;    "Tags": ["front", "black"]&#10;  },&#10;  {&#10;    "productCode": "P002",&#10;    "uploaded_mockup": "https://placeit.net/c/mockups/stages/hoodie-mockup-67890/editor?customG_0=xyz789",&#10;    "Tags": ["back", "white"]&#10;  }&#10;]'></textarea>
         <div class="file-upload">
-          <input type="file" id="csvFile" accept=".csv" />
+          <input type="file" id="jsonFile" accept=".json" />
         </div>
       </div>
 
@@ -363,7 +363,7 @@
         </div>
         <div class="info-box">
           <p><strong>How it works:</strong></p>
-          <p>1. Paste your CSV data with columns: productCode, uploaded_mockup, Tags</p>
+          <p>1. Paste your JSON data with fields: productCode, uploaded_mockup, Tags</p>
           <p>2. Provide a JSON mapping of tags to Placeit mockup URLs</p>
           <p>3. Click Generate to create all URLs with your design injected</p>
           <p>4. Download the URL list or open them all in new tabs</p>

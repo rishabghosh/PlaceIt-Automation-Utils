@@ -3,39 +3,28 @@
 let generatedUrls = [];
 
 // Utility Functions
-const parseCSV = (csvText) => {
-  const lines = csvText.trim().split('\n');
-  if (lines.length < 2) {
-    throw new Error('CSV must have at least a header row and one data row');
+const parseJSON = (jsonText) => {
+  const data = JSON.parse(jsonText);
+
+  if (!Array.isArray(data)) {
+    throw new Error('JSON must be an array of objects');
   }
 
-  const headers = lines[0].split(',').map(h => h.trim());
-  const rows = [];
+  if (data.length === 0) {
+    throw new Error('JSON array must have at least one item');
+  }
 
-  for (let i = 1; i < lines.length; i++) {
-    const values = lines[i].split(',');
-    const row = {};
-
-    headers.forEach((header, index) => {
-      row[header] = values[index]?.trim() || '';
-    });
-
-    // Handle Tags field - collect remaining values as tags
-    if (values.length > headers.length) {
-      const tagStartIndex = headers.indexOf('Tags');
-      if (tagStartIndex !== -1) {
-        const allTags = values.slice(tagStartIndex).map(t => t.trim()).filter(Boolean);
-        row.Tags = allTags;
-      }
-    } else if (row.Tags) {
-      // If tags are in a single cell, split by comma
-      row.Tags = row.Tags.split(',').map(t => t.trim()).filter(Boolean);
+  // Validate each row has required fields
+  data.forEach((row, index) => {
+    if (!row.uploaded_mockup) {
+      throw new Error(`Row ${index + 1} is missing "uploaded_mockup" field`);
     }
+    if (!row.Tags) {
+      throw new Error(`Row ${index + 1} is missing "Tags" field`);
+    }
+  });
 
-    rows.push(row);
-  }
-
-  return rows;
+  return data;
 };
 
 const extractCustomId = (url) => {
@@ -83,7 +72,7 @@ const showAlert = (message, type = 'success') => {
 };
 
 // File Upload Handlers
-const setupFileUpload = (inputId, textareaId, parser) => {
+const setupFileUpload = (inputId, textareaId, shouldParse = false) => {
   const fileInput = document.getElementById(inputId);
   const textarea = document.getElementById(textareaId);
 
@@ -93,12 +82,15 @@ const setupFileUpload = (inputId, textareaId, parser) => {
 
     try {
       const text = await file.text();
-      if (parser) {
-        const parsed = parser(text);
+
+      if (shouldParse) {
+        // Validate it's valid JSON
+        const parsed = JSON.parse(text);
         textarea.value = JSON.stringify(parsed, null, 2);
       } else {
         textarea.value = text;
       }
+
       showAlert(`File "${file.name}" loaded successfully`, 'success');
     } catch (error) {
       showAlert(`Error loading file: ${error.message}`, 'error');
@@ -111,11 +103,11 @@ const setupFileUpload = (inputId, textareaId, parser) => {
 // URL Generation
 const generateUrls = () => {
   try {
-    const csvInput = document.getElementById('csvInput').value.trim();
+    const jsonInput = document.getElementById('jsonInput').value.trim();
     const mappingInput = document.getElementById('mappingInput').value.trim();
 
-    if (!csvInput) {
-      showAlert('Please enter CSV data', 'error');
+    if (!jsonInput) {
+      showAlert('Please enter JSON data', 'error');
       return;
     }
 
@@ -125,7 +117,7 @@ const generateUrls = () => {
     }
 
     // Parse inputs
-    const rows = parseCSV(csvInput);
+    const rows = parseJSON(jsonInput);
     const mapping = JSON.parse(mappingInput);
 
     // Generate URLs
@@ -324,7 +316,7 @@ const openAllUrls = () => {
 
 const clearAll = () => {
   if (confirm('Clear all data? This cannot be undone.')) {
-    document.getElementById('csvInput').value = '';
+    document.getElementById('jsonInput').value = '';
     document.getElementById('mappingInput').value = '';
     generatedUrls = [];
     renderUrls();
@@ -351,8 +343,8 @@ const loadSampleMapping = async () => {
 // Event Listeners
 document.addEventListener('DOMContentLoaded', () => {
   // File uploads
-  setupFileUpload('csvFile', 'csvInput', null);
-  setupFileUpload('mappingFile', 'mappingInput', (text) => JSON.parse(text));
+  setupFileUpload('jsonFile', 'jsonInput', true);
+  setupFileUpload('mappingFile', 'mappingInput', true);
 
   // Buttons
   document.getElementById('generateBtn').addEventListener('click', generateUrls);
