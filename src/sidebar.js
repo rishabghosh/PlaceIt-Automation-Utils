@@ -85,8 +85,10 @@ const createSidebarHTML = (categories) => {
   return `
     <div id="placeit-helper-sidebar">
       <div class="sidebar-header">
-        <h3>PlaceIt Helper</h3>
-        <button class="sidebar-toggle" id="sidebar-toggle">→</button>
+        <h3 class="sidebar-title">PlaceIt Helper</h3>
+        <button class="sidebar-toggle" id="sidebar-toggle" title="Collapse sidebar">
+          <span class="toggle-icon">→</span>
+        </button>
       </div>
 
       <div class="sidebar-content">
@@ -263,15 +265,23 @@ const handleGenerate = async () => {
 const handleToggle = () => {
   const sidebar = document.getElementById('placeit-helper-sidebar');
   const toggle = document.getElementById('sidebar-toggle');
+  const toggleIcon = toggle.querySelector('.toggle-icon');
+  const title = sidebar.querySelector('.sidebar-title');
 
   if (sidebar.classList.contains('collapsed')) {
+    // Expand sidebar
     sidebar.classList.remove('collapsed');
     document.body.classList.remove('sidebar-collapsed');
-    toggle.textContent = '→';
+    if (toggleIcon) toggleIcon.textContent = '→';
+    toggle.setAttribute('title', 'Collapse sidebar');
+    if (title) title.style.display = 'block';
   } else {
+    // Collapse sidebar
     sidebar.classList.add('collapsed');
     document.body.classList.add('sidebar-collapsed');
-    toggle.textContent = '←';
+    if (toggleIcon) toggleIcon.textContent = '←';
+    toggle.setAttribute('title', 'Expand sidebar');
+    if (title) title.style.display = 'none';
   }
 };
 

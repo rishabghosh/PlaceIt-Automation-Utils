@@ -68,8 +68,8 @@ body.placeit-helper-active.sidebar-collapsed {
   background: rgba(255, 255, 255, 0.3);
 }
 
-#placeit-helper-sidebar.collapsed .sidebar-toggle {
-  transform: rotate(180deg);
+#placeit-helper-sidebar.collapsed .sidebar-title {
+  display: none;
 }
 
 /* Content Area */
@@ -316,4 +316,16 @@ body.placeit-helper-active.sidebar-collapsed {
 /* Collapsed State */
 #placeit-helper-sidebar.collapsed .sidebar-toggle {
   margin: 8px auto;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  padding: 12px 4px;
+  height: auto;
+  width: 100%;
+  font-size: 14px;
+  border-radius: 0 6px 6px 0;
+}
+
+#placeit-helper-sidebar.collapsed .sidebar-header {
+  flex-direction: column;
+  padding: 12px 4px;
 }
