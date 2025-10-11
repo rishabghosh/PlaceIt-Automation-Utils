@@ -7,7 +7,8 @@ const state = {
   customG_0: null,
   selectedModels: [],
   mapping: null,
-  isGenerating: false
+  isGenerating: false,
+  activeTab: 'front' // 'front' or 'back'
 };
 
 // Check if we're on a PlaceIt mockup editor page
@@ -37,38 +38,48 @@ const loadMapping = async () => {
   }
 };
 
-// Categorize model codes
+// Categorize model codes by side (front/back) and category
 const categorizeModels = (mapping) => {
-  const categories = {
+  const front = {
     'Oversized Male': [],
     'Regular Male': [],
     'Oversized Female': [],
     'Regular Female': []
   };
 
-  Object.keys(mapping).forEach(code => {
+  const back = {
+    'Oversized Male': [],
+    'Regular Male': [],
+    'Oversized Female': [],
+    'Regular Female': []
+  };
+
+  Object.entries(mapping).forEach(([code, data]) => {
+    const targetCategories = data.side === 'front' ? front : back;
+    const modelData = { code, displayName: data.displayName || code };
+
     if (code.startsWith('OM-')) {
-      categories['Oversized Male'].push(code);
+      targetCategories['Oversized Male'].push(modelData);
     } else if (code.startsWith('RM-')) {
-      categories['Regular Male'].push(code);
+      targetCategories['Regular Male'].push(modelData);
     } else if (code.startsWith('OF-')) {
-      categories['Oversized Female'].push(code);
+      targetCategories['Oversized Female'].push(modelData);
     } else if (code.startsWith('RF-')) {
-      categories['Regular Female'].push(code);
+      targetCategories['Regular Female'].push(modelData);
     }
   });
 
-  return categories;
+  return { front, back };
 };
 
-// Create sidebar HTML
-const createSidebarHTML = (categories) => {
-  const categoriesHTML = Object.entries(categories)
-    .map(([categoryName, codes]) => {
-      if (codes.length === 0) return '';
+// Create categories HTML for a specific side
+const createCategoriesHTML = (categories) => {
+  return Object.entries(categories)
+    .map(([categoryName, models]) => {
+      if (models.length === 0) return '';
 
-      const buttonsHTML = codes
-        .map(code => `<button class="model-btn" data-code="${code}">${code}</button>`)
+      const buttonsHTML = models
+        .map(model => `<button class="model-btn" data-code="${model.code}">${model.displayName}</button>`)
         .join('');
 
       return `
@@ -81,6 +92,12 @@ const createSidebarHTML = (categories) => {
       `;
     })
     .join('');
+};
+
+// Create sidebar HTML
+const createSidebarHTML = (frontCategories, backCategories) => {
+  const frontHTML = createCategoriesHTML(frontCategories);
+  const backHTML = createCategoriesHTML(backCategories);
 
   return `
     <div id="placeit-helper-sidebar">
@@ -103,16 +120,20 @@ const createSidebarHTML = (categories) => {
           <div class="status-message" id="status-message"></div>
         </div>
 
-        <div id="model-categories">
-          ${categoriesHTML}
+        <div class="tabs-container">
+          <div class="tabs">
+            <button class="tab active" data-tab="front">Front</button>
+            <button class="tab" data-tab="back">Back</button>
+          </div>
         </div>
 
-        ${categoriesHTML === '' ? `
-          <div class="empty-state">
-            <div class="empty-state-icon">📦</div>
-            <div class="empty-state-text">No models found in mapping</div>
-          </div>
-        ` : ''}
+        <div class="tab-content active" id="front-tab">
+          ${frontHTML || '<div class="empty-state"><div class="empty-state-icon">📦</div><div class="empty-state-text">No front models found</div></div>'}
+        </div>
+
+        <div class="tab-content" id="back-tab">
+          ${backHTML || '<div class="empty-state"><div class="empty-state-icon">📦</div><div class="empty-state-text">No back models found</div></div>'}
+        </div>
       </div>
 
       <div class="generate-section">
@@ -300,10 +321,10 @@ const initializeSidebar = async () => {
   }
 
   // Categorize models
-  const categories = categorizeModels(state.mapping);
+  const { front, back } = categorizeModels(state.mapping);
 
   // Create and inject sidebar
-  const sidebarHTML = createSidebarHTML(categories);
+  const sidebarHTML = createSidebarHTML(front, back);
   const container = document.createElement('div');
   container.innerHTML = sidebarHTML;
   document.body.appendChild(container.firstElementChild);
@@ -321,7 +342,9 @@ const initializeSidebar = async () => {
   const retrieveBtn = document.getElementById('retrieve-profile-btn');
   const generateBtn = document.getElementById('generate-btn');
   const toggleBtn = document.getElementById('sidebar-toggle');
-  const modelCategories = document.getElementById('model-categories');
+  const frontTab = document.getElementById('front-tab');
+  const backTab = document.getElementById('back-tab');
+  const tabs = document.querySelectorAll('.tab');
 
   if (retrieveBtn) {
     retrieveBtn.addEventListener('click', handleRetrieveProfile);
@@ -335,9 +358,32 @@ const initializeSidebar = async () => {
     toggleBtn.addEventListener('click', handleToggle);
   }
 
-  if (modelCategories) {
-    modelCategories.addEventListener('click', handleModelClick);
+  // Add click listeners for model buttons in both tabs
+  if (frontTab) {
+    frontTab.addEventListener('click', handleModelClick);
   }
+
+  if (backTab) {
+    backTab.addEventListener('click', handleModelClick);
+  }
+
+  // Handle tab switching
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const tabName = tab.dataset.tab;
+      state.activeTab = tabName;
+
+      // Update active tab button
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      // Update active tab content
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      document.getElementById(`${tabName}-tab`).classList.add('active');
+    });
+  });
 
   console.log('PlaceIt Helper sidebar initialized');
 };
