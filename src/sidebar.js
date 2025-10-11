@@ -56,7 +56,12 @@ const categorizeModels = (mapping) => {
 
   Object.entries(mapping).forEach(([code, data]) => {
     const targetCategories = data.side === 'front' ? front : back;
-    const modelData = { code, displayName: data.displayName || code };
+    const modelData = {
+      code,
+      displayName: data.displayName || code,
+      manualIntervention: data.manualIntervention || false,
+      narrowMockupContainer: data.narrowMockupContainer || false
+    };
 
     if (code.startsWith('OM-')) {
       targetCategories['Oversized Male'].push(modelData);
@@ -79,7 +84,23 @@ const createCategoriesHTML = (categories) => {
       if (models.length === 0) return '';
 
       const buttonsHTML = models
-        .map(model => `<button class="model-btn" data-code="${model.code}">${model.displayName}</button>`)
+        .map(model => {
+          const icons = [];
+
+          if (model.manualIntervention) {
+            icons.push('<span class="model-icon warning-icon" title="Manual intervention needed">⚠️</span>');
+          }
+
+          if (model.narrowMockupContainer) {
+            icons.push('<span class="model-icon container-icon" title="Using a different container">⭕</span>');
+          }
+
+          const iconsHTML = icons.length > 0 ? `<span class="model-icons">${icons.join('')}</span>` : '';
+
+          return `<button class="model-btn" data-code="${model.code}">
+            <span class="model-name">${model.displayName}</span>${iconsHTML}
+          </button>`;
+        })
         .join('');
 
       return `

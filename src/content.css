@@ -215,6 +215,30 @@ body.placeit-helper-active.sidebar-collapsed {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.model-btn .model-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.model-btn .model-icons {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.model-btn .model-icon {
+  font-size: 12px;
+  line-height: 1;
+  cursor: help;
 }
 
 .model-btn:hover {
