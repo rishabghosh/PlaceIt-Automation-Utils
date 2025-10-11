@@ -10,7 +10,9 @@ export default defineConfig({
     rollupOptions: {
       input: {
         popup: 'src/popup.html',
-        fullscreen: 'src/fullscreen.html'
+        fullscreen: 'src/fullscreen.html',
+        sidebar: 'src/sidebar.js',
+        contentCss: 'src/content.css'
       }
     }
   }
