@@ -2,11 +2,14 @@
   "name": "placeit-automation-utils",
   "version": "1.0.0",
   "type": "module",
-  "description": "Placeit Bulk Mockup Downloader (Chrome Extension)",
+  "description": "Placeit Bulk Mockup Generator - Chrome Extension and Web Application",
   "scripts": {
     "dev": "vite",
+    "dev:web": "vite --config vite.config.web.js",
     "build": "vite build",
+    "build:web": "vite build --config vite.config.web.js",
     "preview": "vite preview",
+    "preview:web": "vite preview --config vite.config.web.js",
     "crop": "node crop-and-rename.js"
   },
   "repository": {

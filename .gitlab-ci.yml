@@ -1,0 +1,42 @@
+# GitLab CI/CD Configuration for Placeit Bulk Mockup Generator
+
+image: node:18
+
+# Define stages
+stages:
+  - build
+  - deploy
+
+# Cache node_modules for faster builds
+cache:
+  paths:
+    - node_modules/
+
+# Build stage
+build:
+  stage: build
+  script:
+    - npm ci
+    - npm run build:web
+    - mkdir -p public/src
+    - cp src/mapping_sample.json public/src/
+  artifacts:
+    paths:
+      - public/
+    expire_in: 1 hour
+  only:
+    - main
+    - feature/website
+
+# Deploy to GitLab Pages
+pages:
+  stage: deploy
+  dependencies:
+    - build
+  script:
+    - echo "Deploying to GitLab Pages..."
+  artifacts:
+    paths:
+      - public
+  only:
+    - main

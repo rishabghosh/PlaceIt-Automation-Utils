@@ -1,4 +1,31 @@
-# Placeit Bulk Mockup Downloader
+# Placeit Bulk Mockup Generator
+
+Automate bulk generation of Placeit mockup URLs by reading CSV data, mapping tags to template links, and injecting your uploaded design. Available as both a Chrome extension and a standalone web application.
+
+## 🎯 Choose Your Version
+
+### Chrome Extension (Full Automation)
+- ✅ Automatic tab opening and downloads
+- ✅ Complete automation of the download process
+- ✅ Tab management and cleanup
+- ❌ Requires Chrome browser
+- ❌ Manual installation needed
+
+**[See Chrome Extension Documentation Below](#chrome-extension)**
+
+### Web Application (GitLab Pages)
+- ✅ Works in any modern browser
+- ✅ No installation required
+- ✅ Easy to deploy and share
+- ✅ URL generation and batch opening
+- ❌ No automatic downloads (manual process)
+- ❌ Limited browser automation
+
+**[See Web Application Documentation](./README.web.md)** | **[Deployment Guide](./DEPLOYMENT.md)**
+
+---
+
+## Chrome Extension
 
 Chrome extension for automating bulk downloads of Placeit mockups by reading CSV data, mapping tags to template links, injecting your uploaded design, and triggering downloads.
 
