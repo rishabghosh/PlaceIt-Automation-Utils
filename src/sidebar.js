@@ -87,7 +87,7 @@ const createSidebarHTML = (categories) => {
       <div class="sidebar-header">
         <h3 class="sidebar-title">PlaceIt Helper</h3>
         <button class="sidebar-toggle" id="sidebar-toggle" title="Collapse sidebar">
-          <span class="toggle-icon">→</span>
+          <span class="toggle-icon">←</span>
         </button>
       </div>
 
@@ -272,14 +272,14 @@ const handleToggle = () => {
     // Expand sidebar
     sidebar.classList.remove('collapsed');
     document.body.classList.remove('sidebar-collapsed');
-    if (toggleIcon) toggleIcon.textContent = '→';
+    if (toggleIcon) toggleIcon.textContent = '←';
     toggle.setAttribute('title', 'Collapse sidebar');
     if (title) title.style.display = 'block';
   } else {
     // Collapse sidebar
     sidebar.classList.add('collapsed');
     document.body.classList.add('sidebar-collapsed');
-    if (toggleIcon) toggleIcon.textContent = '←';
+    if (toggleIcon) toggleIcon.textContent = '→';
     toggle.setAttribute('title', 'Expand sidebar');
     if (title) title.style.display = 'none';
   }
