@@ -416,7 +416,47 @@
     "manualIntervention": false,
     "displayName": "Hoodie Indian Stylish F1"
   },
-  "HPM-XYZ-B-1": {
+  "HF-Indonesian-F-1": {
+    "mockupUrl": "https://placeit.net/c/mockups/stages/hoodie-mockup-featuring-a-woman-in-a-casual-look-against-a-white-background-21770/editor?colorFolder_Hoodie%20Color=%23000000",
+    "downloadedName": "hoodie-mockup-featuring-a-woman-in-a-casual-look-against-a-white-background-21770",
+    "crop": {"height": 1085, "width": 1085, "x": 412, "y": 57},
+    "renameTo": "regular_female_front",
+    "narrowMockupContainer": false,
+    "side": "front",
+    "manualIntervention": false,
+    "displayName": "Hoodie Indonesian F1"
+  },
+  "HF-Indian-Stylish-F-2": {
+    "mockupUrl": "https://placeit.net/c/mockups/stages/mockup-featuring-a-woman-wearing-a-hoodie-from-gildan-in-a-studio-m37533/editor?colorFolder_Background=%23c0c0c0&colorFolder_Hoodie%20Color=%23000000",
+    "downloadedName": "mockup-featuring-a-woman-wearing-a-hoodie-from-gildan-in-a-studio-m37533",
+    "crop": {"height": 2000, "width": 2000, "x": 0, "y": 467},
+    "renameTo": "regular_female_front",
+    "narrowMockupContainer": false,
+    "side": "front",
+    "manualIntervention": false,
+    "displayName": "Hoodie Indian Stylish F2"
+  },
+  "HF-curly-F-1": {
+    "mockupUrl": "https://placeit.net/c/mockups/stages/pullover-hoodie-mockup-of-a-woman-with-natural-curly-hair-m28863/editor?colorFolder_Hoodie%20Color=%23000000&colorFolder_Background=%23c0c0c0",
+    "downloadedName": "pullover-hoodie-mockup-of-a-woman-with-natural-curly-hair-m28863",
+    "crop": {"height": 1350, "width": 1350, "x": 77, "y": 88},
+    "renameTo": "regular_female_front",
+    "narrowMockupContainer": false,
+    "side": "front",
+    "manualIntervention": false,
+    "displayName": "Hoodie Curly F1"
+  },
+  "HF-golden-ginger-F-1": {
+    "mockupUrl": "https://placeit.net/c/mockups/stages/mockup-of-a-woman-wearing-a-pullover-hoodie-20908/editor?colorFolder_Hoodie%20Color=%23000000",
+    "downloadedName": "mockup-of-a-woman-wearing-a-pullover-hoodie-20908",
+    "crop": {"height": 1066, "width": 1066, "x": 443, "y": 73},
+    "renameTo": "regular_female_front",
+    "narrowMockupContainer": false,
+    "side": "front",
+    "manualIntervention": false,
+    "displayName": "Hoodie Golden Ginger F1"
+  },
+  "HF-XYZ-B-1": {
     "mockupUrl": "",
     "downloadedName": "",
     "crop": {"height": 0, "width": 0, "x": 0, "y": 0},
