@@ -44,14 +44,18 @@ const categorizeModels = (mapping) => {
     'Oversized Male': [],
     'Regular Male': [],
     'Oversized Female': [],
-    'Regular Female': []
+    'Regular Female': [],
+    'Hoodie Male': [],
+    'Hoodie Female': [],
   };
 
   const back = {
     'Oversized Male': [],
     'Regular Male': [],
     'Oversized Female': [],
-    'Regular Female': []
+    'Regular Female': [],
+    'Hoodie Male': [],
+    'Hoodie Female': [],
   };
 
   Object.entries(mapping).forEach(([code, data]) => {
@@ -71,10 +75,10 @@ const categorizeModels = (mapping) => {
       targetCategories['Oversized Female'].push(modelData);
     } else if (code.startsWith('RF-')) {
       targetCategories['Regular Female'].push(modelData);
-    } else if (code.startsWith('HF-')) {
-      targetCategories['Hoodie Female'].push(modelData);
     } else if (code.startsWith('HM-')) {
       targetCategories['Hoodie Male'].push(modelData);
+    } else if (code.startsWith('HF-')) {
+      targetCategories['Hoodie Female'].push(modelData);
     }
   });
 
