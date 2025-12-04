@@ -404,5 +404,16 @@
     "side": "back",
     "manualIntervention": false,
     "displayName": "Gloomy B1"
+  },
+
+  "HPM-XYZ-B-1": {
+    "mockupUrl": "",
+    "downloadedName": "",
+    "crop": {"height": 0, "width": 0, "x": 0, "y": 0},
+    "renameTo": "regular_male_back",
+    "narrowMockupContainer": false,
+    "side": "back",
+    "manualIntervention": false,
+    "displayName": "HD XYZ B1"
   }
 }
