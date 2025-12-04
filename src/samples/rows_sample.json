@@ -1,20 +1,28 @@
 [
   {
-    "productCode": "x",
-    "uploaded_mockup": "https://placeit.net/c/mockups/stages/mockup-of-a-serious-man-wearing-an-oversized-tee-and-a-dad-hat-at-a-studio-m26647/editor?colorFolder_Cubes%20Color=%23F5CFAD&colorFolder_Shirt%20Color=%23000000&colorFolder_Hat%20Color=%23cfdaff&customG_0=t3p1hzd576",
-    "Tags": ["OM-Taking-Off-F-1",
-      "RM-Japanese-F-1",
-      "OF-Old-Caucasian-F-1",
-      "RF-Ginger-F-1"
-      ]
+    "productCode": "xy",
+    "uploaded_mockup": "https://placeit.net/c/mockups/stages/t-shirt-mockup-of-a-smiling-girl-at-a-studio-22333/editor?colorFolder_Shirt%20Color=%23000000&colorFolder_Background=%23c0c0c0&customG_0=t3ywaldb86",
+    "Tags": [
+      "RF-Gloomy-F-1",
+      "RF-Gloomy-F-2",
+      "RF-Gloomy-B-1"
+    ]
   },
   {
-    "productCode": "x",
-    "uploaded_mockup": "https://placeit.net/c/mockups/stages/back-view-mockup-of-a-man-wearing-an-oversized-tee-m26648/editor?colorFolder_Shirt%20Color=%23000000&colorFolder_Cubes%20Color=%23c0c0c0&colorFolder_Hat%20Color=%23c1112f&customG_0=t3p1jpb62a",
+    "productCode": "xy",
+    "uploaded_mockup": "https://placeit.net/c/mockups/stages/mockup-of-a-serious-man-wearing-an-oversized-tee-and-a-dad-hat-at-a-studio-m26647/editor?colorFolder_Shirt%20Color=%23000000&colorFolder_Cubes%20Color=%23c0c0c0&colorFolder_Hat%20Color=%23b8f1fe",
+    "Tags": [
+      "RF-Gloomy-F-1",
+      "RF-Gloomy-F-2",
+      "RF-Gloomy-B-1"
+    ]
+  },
+  {
+    "productCode": "xy",
+    "uploaded_mockup": "",
     "Tags": [
       "OM-Taking-Off-B-1",
-      "RM-Japanese-B-1",
-      "OF-Old-Caucasian-B-1",
-      "RF-Ginger-B-1"]
+      "RM-Japanese-B-1"
+    ]
   }
 ]

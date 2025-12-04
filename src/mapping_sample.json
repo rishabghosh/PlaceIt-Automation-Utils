@@ -406,6 +406,16 @@
     "displayName": "Gloomy B1"
   },
 
+  "HF-Indian-Stylish-F-1": {
+    "mockupUrl": "https://placeit.net/c/mockups/stages/gildan-hoodie-mockup-featuring-a-smiling-woman-posing-against-a-colorful-backdrop-m37552/editor?customG_0=t5jnehd644&colorFolder_Hoodie%20Color=%23000000&colorFolder_Background=%23c0c0c0",
+    "downloadedName": "gildan-hoodie-mockup-featuring-a-smiling-woman-posing-against-a-colorful-backdrop-m37552",
+    "crop": {"height": 1900, "width": 1900, "x": 49, "y": 306},
+    "renameTo": "regular_female_front",
+    "narrowMockupContainer": false,
+    "side": "front",
+    "manualIntervention": false,
+    "displayName": "Hoodie Indian Stylish F1"
+  },
   "HPM-XYZ-B-1": {
     "mockupUrl": "",
     "downloadedName": "",
