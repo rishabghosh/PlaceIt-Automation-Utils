@@ -456,14 +456,44 @@
     "manualIntervention": false,
     "displayName": "Hoodie Golden Ginger F1"
   },
-  "HF-XYZ-B-1": {
-    "mockupUrl": "",
-    "downloadedName": "",
-    "crop": {"height": 0, "width": 0, "x": 0, "y": 0},
-    "renameTo": "regular_male_back",
+  "HF-golden-ginger-B-1": {
+    "mockupUrl": "https://placeit.net/c/mockups/stages/back-shot-hoodie-mockup-of-a-woman-20909/editor?colorFolder_Hoodie%20Color=%23000000",
+    "downloadedName": "back-shot-hoodie-mockup-of-a-woman-20909",
+    "crop": {"height": 1066, "width": 1066, "x": 433, "y": 75},
+    "renameTo": "regular_female_back",
     "narrowMockupContainer": false,
     "side": "back",
     "manualIntervention": false,
-    "displayName": "HD XYZ B1"
+    "displayName": "Hoodie Golden Ginger B1"
+  },
+  "HF-curly-B-1": {
+    "mockupUrl": "https://placeit.net/c/mockups/stages/back-view-hoodie-mockup-featuring-a-curly-haired-woman-m28867/editor?colorFolder_Hoodie%20Color=%23000000&colorFolder_Background=%23c0c0c0",
+    "downloadedName": "back-view-hoodie-mockup-featuring-a-curly-haired-woman-m28867",
+    "crop": {"height": 1440, "width": 1440, "x": 0, "y": 146},
+    "renameTo": "regular_female_back",
+    "narrowMockupContainer": false,
+    "side": "back",
+    "manualIntervention": false,
+    "displayName": "Hoodie Curly B1"
+  },
+  "HF-Indian-Stylish-B-1": {
+    "mockupUrl": "https://placeit.net/c/mockups/stages/back-view-gildan-hoodie-mockup-of-a-woman-standing-against-a-colorful-background-m37535/editor?colorFolder_Hoodie%20Color=%23000000&colorFolder_Background=%23c0c0c0",
+    "downloadedName": "back-view-gildan-hoodie-mockup-of-a-woman-standing-against-a-colorful-background-m37535",
+    "crop": {"height": 2000, "width": 2000, "x": 0, "y": 443},
+    "renameTo": "regular_female_back",
+    "narrowMockupContainer": false,
+    "side": "back",
+    "manualIntervention": false,
+    "displayName": "Hoodie Indian Stylish B1"
+  },
+  "HF-Indonesian-B-1": {
+    "mockupUrl": "https://placeit.net/c/mockups/stages/back-view-hoodie-mockup-featuring-a-female-model-in-plain-pose-21783/editor?colorFolder_Shirt%20Color=%23000000",
+    "downloadedName": "back-view-hoodie-mockup-featuring-a-female-model-in-plain-pose-21783",
+    "crop": {"height": 1050, "width": 1050, "x": 436, "y": 70},
+    "renameTo": "regular_female_back",
+    "narrowMockupContainer": false,
+    "side": "back",
+    "manualIntervention": false,
+    "displayName": "Hoodie Indonesian B1"
   }
 }
