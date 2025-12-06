@@ -11,7 +11,8 @@ const ELEMENTS = {
   fullscreenBtn: 'fullscreenBtn',
   progressSection: 'progressSection',
   progressBar: 'progressBar',
-  progressText: 'progressText'
+  progressText: 'progressText',
+  queueBadge: 'queueBadge'
 };
 
 const createLogEntry = (message) => {
@@ -209,6 +210,18 @@ const handleRunError = (error) => {
   log('Run error: ' + (error || 'unknown'));
 };
 
+const handleQueueUpdate = (msg) => {
+  const { queueCount } = msg;
+  const badge = document.getElementById(ELEMENTS.queueBadge);
+
+  if (badge && queueCount > 0) {
+    badge.textContent = queueCount;
+    badge.style.display = 'inline-flex';
+  } else if (badge) {
+    badge.style.display = 'none';
+  }
+};
+
 const handleProgressUpdate = (msg) => {
   const { processed, total } = msg;
 
@@ -253,6 +266,8 @@ const initializeEventListeners = () => {
       handleRunFinished();
     } else if (msg.action === 'runError') {
       handleRunError(msg.error);
+    } else if (msg.action === 'queueUpdated') {
+      handleQueueUpdate(msg);
     }
   });
 };
