@@ -7,31 +7,71 @@ const runState = {
   processedMockups: 0
 };
 
-const handleStartRun = (payload, sendResponse) => {
-  if (runState.running) {
-    sendResponse({ ok: false, error: 'Run already in progress' });
-    return;
-  }
+// Queue management
+const queue = {
+  items: [],
+  processing: false,
 
-  runState.running = true;
-  runState.stopRequested = false;
+  add(payload) {
+    this.items.push(payload);
+    this.notifyQueueChange();
+    this.processNext();
+  },
 
-  startRun(payload)
-    .then(() => {
-      runState.running = false;
+  async processNext() {
+    if (this.processing || this.items.length === 0) return;
+
+    this.processing = true;
+    const payload = this.items.shift();
+    this.notifyQueueChange();
+
+    try {
+      runState.running = true;
+      runState.stopRequested = false;
+      await startRun(payload);
       sendMessage('runFinished');
-    })
-    .catch(err => {
-      runState.running = false;
+    } catch (err) {
       sendMessage('runError', { error: err?.message });
-    });
+    } finally {
+      runState.running = false;
+      this.processing = false;
 
+      if (this.items.length > 0) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        this.processNext();
+      } else {
+        this.notifyQueueChange();
+      }
+    }
+  },
+
+  notifyQueueChange() {
+    sendMessage('queueUpdated', {
+      queueCount: this.items.length,
+      isProcessing: this.processing || runState.running
+    });
+  },
+
+  getStatus() {
+    return {
+      queueCount: this.items.length,
+      isProcessing: this.processing || runState.running
+    };
+  }
+};
+
+const handleStartRun = (payload, sendResponse) => {
+  queue.add(payload);
   sendResponse({ ok: true });
 };
 
 const handleStopRun = (sendResponse) => {
   runState.stopRequested = true;
   sendResponse({ ok: true });
+};
+
+const handleGetQueueStatus = (sendResponse) => {
+  sendResponse(queue.getStatus());
 };
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
@@ -41,6 +81,8 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     handleStartRun(msg.payload, sendResponse);
   } else if (msg.action === 'stopRun') {
     handleStopRun(sendResponse);
+  } else if (msg.action === 'getQueueStatus') {
+    handleGetQueueStatus(sendResponse);
   }
 
   return true;

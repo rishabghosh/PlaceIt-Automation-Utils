@@ -154,6 +154,43 @@
         margin-left: 12px;
       }
 
+      .queue-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: #ef4444;
+        color: white;
+        border-radius: 50%;
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+        font-weight: 700;
+        margin-left: 8px;
+        position: relative;
+        animation: pulse 1s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        0%, 100% {
+          box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+        }
+        50% {
+          box-shadow: 0 0 0 8px rgba(239, 68, 68, 0);
+        }
+      }
+
+      .queue-badge.hidden {
+        display: none;
+      }
+
+      .start-button-wrapper {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        flex: 1;
+        min-width: 150px;
+      }
+
       .log-section {
         margin-top: 32px;
       }
@@ -366,7 +403,10 @@
         </div>
 
         <div class="button-group">
-          <button id="startBtn">▶ Start Processing</button>
+          <div class="start-button-wrapper">
+            <button id="startBtn">▶ Start Processing</button>
+            <div id="queueBadge" class="queue-badge hidden">0</div>
+          </div>
           <button id="stopBtn">⏹ Stop</button>
           <button id="previewBtn">👁 Preview First URL</button>
         </div>

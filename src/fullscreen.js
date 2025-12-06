@@ -11,7 +11,8 @@ const ELEMENTS = {
   clearLogBtn: 'clearLogBtn',
   progressSection: 'progressSection',
   progressBar: 'progressBar',
-  progressText: 'progressText'
+  progressText: 'progressText',
+  queueBadge: 'queueBadge'
 };
 
 const createLogEntry = (message, statusClass = '') => {
@@ -272,6 +273,22 @@ const handleRunError = (error) => {
   log('Run error: ' + (error || 'unknown'), 'status-failed');
 };
 
+const handleQueueUpdate = (msg) => {
+  const { queueCount, isProcessing } = msg;
+  const badge = document.getElementById(ELEMENTS.queueBadge);
+
+  if (queueCount === 0 && !isProcessing) {
+    badge.classList.add('hidden');
+  } else {
+    badge.classList.remove('hidden');
+    badge.textContent = queueCount;
+
+    if (queueCount > 0) {
+      log(`Queue updated: ${queueCount} item(s) waiting`, 'status-skipped');
+    }
+  }
+};
+
 const initializeEventListeners = () => {
   document.getElementById(ELEMENTS.startBtn).addEventListener('click', handleStartClick);
   document.getElementById(ELEMENTS.stopBtn).addEventListener('click', handleStopClick);
@@ -290,6 +307,8 @@ const initializeEventListeners = () => {
       handleRunFinished();
     } else if (msg.action === 'runError') {
       handleRunError(msg.error);
+    } else if (msg.action === 'queueUpdated') {
+      handleQueueUpdate(msg);
     }
   });
 };
