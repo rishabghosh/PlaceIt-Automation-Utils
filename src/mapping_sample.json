@@ -483,7 +483,7 @@
     "renameTo": "regular_female_back",
     "narrowMockupContainer": false,
     "side": "back",
-    "manualIntervention": false,
+    "manualIntervention": true,
     "displayName": "Rinki Lookalike B1"
   },
   "HF-Indonesian-B-1": {
@@ -505,7 +505,7 @@
     "renameTo": "regular_male_front",
     "narrowMockupContainer": false,
     "side": "front",
-    "manualIntervention": false,
+    "manualIntervention": true,
     "displayName": "Skinny Indian F1"
   },
   "HM-skinny-indian-B-1": {
@@ -515,7 +515,7 @@
     "renameTo": "regular_male_back",
     "narrowMockupContainer": false,
     "side": "back",
-    "manualIntervention": false,
+    "manualIntervention": true,
     "displayName": "Skinny Indian B1"
   },
   "HM-studio-F-1": {
