@@ -343,7 +343,174 @@ const sendProgress = () => {
   });
 };
 
-const processTag = async (tag, baseUrl, customId, rowIndex, config) => {
+const executeActions = async (tabId, actions) => {
+  console.log('[executeActions] Called with tabId:', tabId, 'actions:', actions);
+
+  if (!actions || actions.length === 0) {
+    console.log('[executeActions] No actions to execute');
+    return { success: true, message: 'no_actions' };
+  }
+
+  try {
+    console.log('[executeActions] Injecting action functions into tab', tabId);
+    // Inject action execution script
+    await chrome.scripting.executeScript({
+      target: { tabId },
+      func: async (actionNames) => {
+        console.log('[executeActions-injected] Script injected with actionNames:', actionNames);
+
+        // ...existing code...
+        const findDropdownButton = () => {
+          const buttons = document.querySelectorAll('button.btn.dropdown-toggle.btn-default');
+          return Array.from(buttons).find(button => {
+            try {
+              const text = button.innerText?.toLowerCase();
+              return text && text.includes('px');
+            } catch (e) {
+              return false;
+            }
+          }) || null;
+        };
+
+        const findRemoveImageOption = () => {
+          const menuItems = document.querySelectorAll('a.remove-placeholder');
+          return menuItems[0] || null;
+        };
+
+        const clickElementSafely = (element) => {
+          try {
+            element.click();
+            return true;
+          } catch (e) {
+            return false;
+          }
+        };
+
+        const observeForElement = (findFunction, timeoutMs = 5000) => {
+          return new Promise((resolve) => {
+            const existing = findFunction();
+            if (existing) return resolve(existing);
+
+            const observer = new MutationObserver(() => {
+              const found = findFunction();
+              if (found) {
+                observer.disconnect();
+                resolve(found);
+              }
+            });
+
+            observer.observe(document, {
+              childList: true,
+              subtree: true,
+              attributes: true
+            });
+
+            setTimeout(() => {
+              observer.disconnect();
+              resolve(null);
+            }, timeoutMs);
+          });
+        };
+
+        const removeImageViaDropdown = async (timeoutMs = 10000) => {
+          try {
+            // Log: Function execution started
+            console.log('[removeImageViaDropdown] Function executed with timeout:', timeoutMs);
+
+            // Step 1: Find and click the dropdown button
+            console.log('[removeImageViaDropdown] Searching for dropdown button...');
+            const dropdownButton = await observeForElement(findDropdownButton, timeoutMs / 2);
+            if (!dropdownButton) {
+              console.error('[removeImageViaDropdown] Dropdown button NOT found');
+              return { success: false, message: 'dropdown_button_not_found' };
+            }
+
+            console.log('[removeImageViaDropdown] Dropdown button FOUND:', dropdownButton);
+            const clickSuccess = clickElementSafely(dropdownButton);
+            console.log('[removeImageViaDropdown] Dropdown button clicked:', clickSuccess);
+
+            console.log('[removeImageViaDropdown] Waiting 300ms for dropdown menu to appear...');
+            await new Promise(resolve => setTimeout(resolve, 300));
+
+            // Step 2: Find and click the "Remove this Image" option
+            console.log('[removeImageViaDropdown] Observing for "Remove this Image" option...');
+            const removeOption = await observeForElement(findRemoveImageOption, timeoutMs / 2);
+            if (!removeOption) {
+              console.error('[removeImageViaDropdown] "Remove this Image" option NOT found');
+              return { success: false, message: 'remove_option_not_found' };
+            }
+
+            console.log('[removeImageViaDropdown] "Remove this Image" option FOUND:', removeOption);
+            const clicked = clickElementSafely(removeOption);
+            console.log('[removeImageViaDropdown] "Remove this Image" option clicked:', clicked);
+
+            if (!clicked) {
+              console.error('[removeImageViaDropdown] Failed to click "Remove this Image" option');
+              return { success: false, message: 'remove_option_click_failed' };
+            }
+
+            console.log('[removeImageViaDropdown] SUCCESS - Image removal initiated');
+            return { success: true, message: 'image_removal_initiated' };
+          } catch (e) {
+            console.error('[removeImageViaDropdown] ERROR:', e?.message || 'unknown_error', e);
+            return { success: false, message: e?.message || 'unknown_error' };
+          }
+        };
+
+        // Define actions mapping AFTER function definition
+        const ACTIONS = {
+          HoodieRemoveSleeve: removeImageViaDropdown
+        };
+
+        console.log('[executeActions-injected] ACTIONS object:', Object.keys(ACTIONS));
+
+        // Execute each action
+        const results = [];
+        for (const actionName of actionNames) {
+          console.log('[executeActions-injected] Processing action:', actionName);
+          const actionFunc = ACTIONS[actionName];
+          if (!actionFunc) {
+            console.error('[executeActions-injected] Action function not found:', actionName);
+            results.push({ actionName, success: false, message: 'action_not_found' });
+            continue;
+          }
+
+          console.log('[executeActions-injected] Found action function, executing:', actionName);
+          try {
+            const result = await actionFunc();
+            console.log('[executeActions-injected] Action result:', actionName, result);
+            results.push({ actionName, ...result });
+          } catch (e) {
+            console.error('[executeActions-injected] Action execution error:', actionName, e?.message);
+            results.push({ actionName, success: false, message: e?.message || 'action_execution_error' });
+          }
+        }
+
+        window.__placeit_actions_result = results;
+        console.log('[executeActions-injected] Storing results:', results);
+      },
+      args: [actions]
+    });
+
+    console.log('[executeActions] Script injection complete, reading results');
+    // Read the results
+    const scriptResult = await chrome.scripting.executeScript({
+      target: { tabId },
+      func: () => window.__placeit_actions_result || []
+    });
+
+    const results = scriptResult?.[0]?.result || [];
+    console.log('[executeActions] Final results:', results);
+    return { success: true, message: 'actions_executed', results };
+
+  } catch (e) {
+    console.error('[executeActions] Error:', e?.message);
+    logMessage(`Error executing actions: ${e?.message}`, 'error');
+    return { success: false, message: e?.message || 'actions_execution_failed' };
+  }
+};
+
+const processTag = async (tag, baseUrl, customId, rowIndex, config, mappingEntry) => {
   const finalUrl = buildFinalUrl(baseUrl, customId);
 
   logMessage(`Opening tag ${tag} -> ${finalUrl}`, 'info', { tag, finalUrl, rowIndex });
@@ -362,6 +529,20 @@ const processTag = async (tag, baseUrl, customId, rowIndex, config) => {
     }
 
     await sleep(config.wait_before_click_ms);
+
+    // Execute actions if they exist in the mapping entry
+    if (mappingEntry && mappingEntry.actions && mappingEntry.actions.length > 0) {
+      logMessage(`Executing ${mappingEntry.actions.length} action(s) for tag ${tag}`, 'info', { tag, rowIndex });
+      const actionsResult = await executeActions(tab.id, mappingEntry.actions);
+      logMessage(`Actions result: ${JSON.stringify(actionsResult)}`, 'info', { tag, rowIndex });
+
+      if (!actionsResult.success) {
+        logMessage(`Warning: Actions execution had issues for tag ${tag}`, 'warn', { tag, rowIndex, details: actionsResult });
+      }
+
+      // Give browser time to process the actions before clicking download
+      await sleep(1000);
+    }
 
     const result = await attemptClickInTab(tab.id, config);
     const status = result.success ? 'success' : 'failed';
@@ -422,7 +603,7 @@ const processRow = async (row, rowIndex, mapping, config) => {
       continue;
     }
 
-    await processTag(tag, baseUrl, customId, rowIndex, config);
+    await processTag(tag, baseUrl, customId, rowIndex, config, mappingEntry);
   }
 
   return true;
