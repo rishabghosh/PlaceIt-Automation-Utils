@@ -446,26 +446,6 @@
     "manualIntervention": false,
     "displayName": "Curly F1"
   },
-  "HF-golden-ginger-F-1": {
-    "mockupUrl": "https://placeit.net/c/mockups/stages/mockup-of-a-woman-wearing-a-pullover-hoodie-20908/editor?colorFolder_Hoodie%20Color=%23000000",
-    "downloadedName": "mockup-of-a-woman-wearing-a-pullover-hoodie-20908",
-    "crop": {"height": 1066, "width": 1066, "x": 443, "y": 73},
-    "renameTo": "female_front",
-    "narrowMockupContainer": false,
-    "side": "front",
-    "manualIntervention": false,
-    "displayName": "Golden Ginger F1"
-  },
-  "HF-golden-ginger-B-1": {
-    "mockupUrl": "https://placeit.net/c/mockups/stages/back-shot-hoodie-mockup-of-a-woman-20909/editor?colorFolder_Hoodie%20Color=%23000000",
-    "downloadedName": "back-shot-hoodie-mockup-of-a-woman-20909",
-    "crop": {"height": 1066, "width": 1066, "x": 433, "y": 75},
-    "renameTo": "female_back",
-    "narrowMockupContainer": false,
-    "side": "back",
-    "manualIntervention": false,
-    "displayName": "Golden Ginger B1"
-  },
   "HF-curly-B-1": {
     "mockupUrl": "https://placeit.net/c/mockups/stages/back-view-hoodie-mockup-featuring-a-curly-haired-woman-m28867/editor?colorFolder_Hoodie%20Color=%23000000&colorFolder_Background=%23c0c0c0",
     "downloadedName": "back-view-hoodie-mockup-featuring-a-curly-haired-woman-m28867",
