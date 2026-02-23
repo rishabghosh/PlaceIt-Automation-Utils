@@ -83,6 +83,8 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     handleStopRun(sendResponse);
   } else if (msg.action === 'getQueueStatus') {
     handleGetQueueStatus(sendResponse);
+  } else if (msg.action === 'getProgress') {
+    sendResponse({ processed: runState.processedMockups, total: runState.totalMockups });
   }
 
   return true;
@@ -189,7 +191,7 @@ const injectClickScript = (tabId) => {
 
       const findDownloadButton = () => {
         return findElementBySelectors(DOWNLOAD_BUTTON_SELECTORS) ||
-               findElementByText(DOWNLOAD_TEXT_PATTERNS);
+          findElementByText(DOWNLOAD_TEXT_PATTERNS);
       };
 
       const observeForElement = (findFunction, timeoutMs) => {
@@ -544,10 +546,23 @@ const processTag = async (tag, baseUrl, customId, rowIndex, config, mappingEntry
       await sleep(1000);
     }
 
-    const result = await attemptClickInTab(tab.id, config);
-    const status = result.success ? 'success' : 'failed';
+    const storageData = await chrome.storage.local.get(['shouldDownload', 'waitBeforeDownloadSeconds']);
+    const shouldDownload = storageData.shouldDownload !== false;
+    const waitSeconds = storageData.waitBeforeDownloadSeconds !== undefined ? parseFloat(storageData.waitBeforeDownloadSeconds) : 15;
 
-    sendStatus(rowIndex, tag, status, { message: result.message });
+    if (waitSeconds > 0) {
+      logMessage(`Waiting ${waitSeconds} seconds before click...`, 'info', { tag, rowIndex });
+      await sleep(waitSeconds * 1000);
+    }
+
+    if (shouldDownload) {
+      const result = await attemptClickInTab(tab.id, config);
+      const status = result.success ? 'success' : 'failed';
+      sendStatus(rowIndex, tag, status, { message: result.message });
+    } else {
+      logMessage(`Skipping download as toggle is off`, 'info', { tag, rowIndex });
+      sendStatus(rowIndex, tag, 'skipped', { message: 'download_disabled_by_toggle' });
+    }
 
     // Update progress
     runState.processedMockups++;
@@ -561,7 +576,13 @@ const processTag = async (tag, baseUrl, customId, rowIndex, config, mappingEntry
     sendProgress();
   }
 
-  await sleep(config.open_interval_ms);
+  const storageDataAfter = await chrome.storage.local.get(['waitNextItemSeconds']);
+  const waitNextSeconds = storageDataAfter.waitNextItemSeconds !== undefined ? parseFloat(storageDataAfter.waitNextItemSeconds) : 30;
+
+  if (waitNextSeconds > 0) {
+    logMessage(`Waiting ${waitNextSeconds} seconds before next item...`, 'info', { tag, rowIndex });
+    await sleep(waitNextSeconds * 1000);
+  }
 };
 
 const processRow = async (row, rowIndex, mapping, config) => {

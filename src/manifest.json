@@ -22,16 +22,29 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://placeit.net/c/mockups/stages*"],
-      "js": ["src/sidebar.js"],
-      "css": ["src/content.css"],
+      "matches": [
+        "https://placeit.net/c/mockups/stages*"
+      ],
+      "js": [
+        "src/sidebar.js"
+      ],
+      "css": [
+        "src/content.css"
+      ],
       "run_at": "document_idle"
     }
   ],
   "web_accessible_resources": [
     {
-      "resources": ["src/mapping_sample.json", "src/samples/rows_sample.json", "src/fullscreen.html", "src/content.css"],
-      "matches": ["https://placeit.net/*", "<all_urls>"]
+      "resources": [
+        "src/mapping_sample.json",
+        "src/samples/rows_sample.json",
+        "src/content.css"
+      ],
+      "matches": [
+        "https://placeit.net/*",
+        "<all_urls>"
+      ]
     }
   ],
   "icons": {

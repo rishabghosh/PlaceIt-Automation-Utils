@@ -1,70 +1,269 @@
-<!doctype html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Placeit Bulk Mockup</title>
-    <style>
-      body { font-family: Arial, sans-serif; width: 480px; padding: 12px; }
-      textarea, input, select { width: 100%; box-sizing: border-box; margin-bottom: 8px; }
-      .row { display:flex; gap:8px; }
-      button { padding:8px 12px; margin-right:6px; }
-      #log { height:180px; overflow:auto; background:#111; color:#fff; padding:8px; font-size:12px; }
-      pre.small { font-size:11px; max-height:120px; overflow:auto; }
-      .queue-badge {
-        display: none;
-        align-items: center;
-        justify-content: center;
-        background: #ef4444;
-        color: white;
-        border-radius: 50%;
-        width: 24px;
-        height: 24px;
-        font-size: 11px;
-        font-weight: 700;
-        margin-left: 8px;
-        animation: pulse 1s ease-in-out infinite;
-      }
-      @keyframes pulse {
-        0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-        50% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
-      }
-    </style>
-  </head>
-  <body>
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-      <h3 style="margin:0;">Placeit Bulk Mockup — Prototype</h3>
-      <button id="fullscreenBtn" style="font-size:11px; padding:4px 8px; background:#667eea; color:white; border:none; cursor:pointer;">⛶ Fullscreen</button>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Placeit Automation</title>
+  <style>
+    :root {
+      --bg: #121214;
+      --surface: #1e1e24;
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+      --accent-1: #6366f1;
+      --accent-2: #8b5cf6;
+      --border: #374151;
+      --radius: 12px;
+      --font: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      font-family: var(--font);
+      background-color: var(--bg);
+      color: var(--text);
+      width: 320px;
+      margin: 0;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    h3 {
+      margin: 0 0 16px 0;
+      font-weight: 700;
+      font-size: 18px;
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
+      letter-spacing: -0.5px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    .row {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+
+    .row-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      margin-bottom: 8px;
+    }
+
+    .row:last-child {
+      margin-bottom: 0;
+    }
+
+    .label-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .title {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.2;
+    }
+
+    /* Toggle Switch */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--border);
+      transition: .4s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s cubic-bezier(0.4, 0.0, 0.2, 1);
+      border-radius: 50%;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    input:checked+.slider {
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+    }
+
+    input:checked+.slider:before {
+      transform: translateX(20px);
+    }
+
+    /* Input Number */
+    .input-wrapper {
+      position: relative;
+      width: 80px;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 14px;
+      padding: 8px 28px 8px 12px;
+      border-radius: 8px;
+      box-sizing: border-box;
+      outline: none;
+      transition: all 0.2s ease;
+      text-align: right;
+    }
+
+    input[type="number"]:focus {
+      border-color: var(--accent-1);
+      box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+    }
+
+    .suffix {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 14px;
+      pointer-events: none;
+      font-weight: 500;
+    }
+
+    /* Progress */
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .status-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .count-text {
+      font-size: 12px;
+      color: var(--accent-2);
+      font-weight: 700;
+      background: rgba(139, 92, 246, 0.15);
+      padding: 4px 10px;
+      border-radius: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    .progress-track {
+      background: rgba(0, 0, 0, 0.3);
+      height: 10px;
+      border-radius: 5px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+      transition: width 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+      border-radius: 5px;
+    }
+  </style>
+</head>
+
+<body>
+  <h3>Placeit Automation</h3>
+
+  <div class="card">
+    <div class="row">
+      <div class="row-header">
+        <div class="label-group">
+          <span class="title">Save Image</span>
+          <span class="subtitle">Auto-download when complete</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="saveToggle" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
     </div>
-    <label>Paste JSON (rows) <button id="downloadSampleBtn" style="font-size:11px; padding:4px 8px; margin-left:8px;">Download Sample</button></label>
-    <textarea id="jsonRowsInput" rows="8" placeholder='Paste array of rows here, e.g. [\n  {\n    "productCode": "CSAW0006.png",\n    "uploaded_mockup": "...",\n    "Tags": ["OM-AA-1", "OF-AA-1"]\n  }\n]'></textarea>
-
-    <label>Tag → Base URL mapping (JSON)</label>
-    <textarea id="mappingInput" rows="6">{
-
-}</textarea>
 
     <div class="row">
-      <div style="display:flex; align-items:center; flex:1;">
-        <button id="startBtn">Start</button>
-        <div id="queueBadge" class="queue-badge">0</div>
-      </div>
-      <button id="stopBtn">Stop</button>
-      <button id="previewBtn">Preview first URL</button>
-    </div>
-
-    <div id="progressSection" style="display:none; margin-bottom:8px;">
-      <div style="font-size:11px; margin-bottom:4px; display:flex; justify-content:space-between;">
-        <strong>Progress</strong>
-        <span id="progressText">0 / 0</span>
-      </div>
-      <div style="height:20px; background:#eee; border-radius:10px; overflow:hidden;">
-        <div id="progressBar" style="height:100%; width:0%; background:linear-gradient(90deg, #667eea 0%, #764ba2 100%); transition:width 0.3s; display:flex; align-items:center; justify-content:center; color:white; font-size:10px; font-weight:600;"></div>
+      <div class="row-header">
+        <div class="label-group">
+          <span class="title">Wait Before Download</span>
+          <span class="subtitle">Delay before downloading</span>
+        </div>
+        <div class="input-wrapper">
+          <input type="number" id="waitSeconds" value="15" min="0" step="1">
+          <span class="suffix">s</span>
+        </div>
       </div>
     </div>
+    <div class="row">
+      <div class="row-header">
+        <div class="label-group">
+          <span class="title">Wait Next Item</span>
+          <span class="subtitle">Delay before opening next mockup</span>
+        </div>
+        <div class="input-wrapper">
+          <input type="number" id="waitNextSeconds" value="30" min="0" step="1">
+          <span class="suffix">s</span>
+        </div>
+      </div>
+    </div>
 
-    <h4>Log</h4>
-    <div id="log"></div>
+    <div class="card" style="margin-bottom: 0;">
+      <div class="progress-header">
+        <span class="status-text">Processing Status</span>
+        <span class="count-text" id="progressText">0 / 0</span>
+      </div>
+      <div class="progress-track" id="progressTrack">
+        <div class="progress-fill" id="progressBar"></div>
+      </div>
+    </div>
 
     <script type="module" src="popup.js"></script>
-  </body>
+</body>
+
 </html>
