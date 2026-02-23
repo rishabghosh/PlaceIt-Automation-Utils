@@ -1,18 +1,32 @@
 /* PlaceIt Sidebar Styles */
+:root {
+  --bg: #121214;
+  --surface: #1e1e24;
+  --text: #f3f4f6;
+  --text-muted: #9ca3af;
+  --accent-1: #6366f1;
+  --accent-2: #8b5cf6;
+  --border: #374151;
+  --radius: 12px;
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
 #placeit-helper-sidebar {
   position: fixed;
   top: 0;
   right: 0;
   width: 320px;
   height: 100vh;
-  background: white;
-  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+  background: var(--bg);
+  color: var(--text);
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.5);
   z-index: 999999;
   display: flex;
   flex-direction: column;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  font-family: var(--font);
   overflow: hidden;
   transition: width 0.3s ease;
+  border-left: 1px solid var(--border);
 }
 
 /* Add right padding to body when sidebar is visible */
@@ -26,18 +40,23 @@ body.placeit-helper-active.sidebar-collapsed {
 }
 
 #placeit-helper-sidebar.collapsed {
-  width: 50px;
+  width: 0px;
+  background: transparent;
+  box-shadow: none;
+  border: none;
+  pointer-events: none;
 }
 
-#placeit-helper-sidebar.collapsed .sidebar-content {
+#placeit-helper-sidebar.collapsed .sidebar-content,
+#placeit-helper-sidebar.collapsed .generate-section,
+#placeit-helper-sidebar.collapsed .sidebar-title {
   display: none;
 }
 
 /* Header */
 .sidebar-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 16px;
+  background: var(--bg);
+  padding: 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -45,17 +64,23 @@ body.placeit-helper-active.sidebar-collapsed {
 
 .sidebar-header h3 {
   margin: 0;
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
+  letter-spacing: -0.5px;
 }
 
 .sidebar-toggle {
-  background: rgba(255, 255, 255, 0.2);
-  border: none;
-  color: white;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border);
+  color: var(--text);
   width: 28px;
   height: 28px;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -65,7 +90,7 @@ body.placeit-helper-active.sidebar-collapsed {
 }
 
 .sidebar-toggle:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 #placeit-helper-sidebar.collapsed .sidebar-title {
@@ -81,36 +106,44 @@ body.placeit-helper-active.sidebar-collapsed {
 
 /* Profile Section */
 .profile-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
   margin-bottom: 20px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 .retrieve-btn {
   width: 100%;
   padding: 10px;
-  background: #667eea;
+  background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: transform 0.2s;
 }
 
 .retrieve-btn:hover {
-  background: #5568d3;
+  transform: translateY(-1px);
 }
 
 .retrieve-btn:disabled {
-  background: #ccc;
+  background: var(--border);
+  color: var(--text-muted);
   cursor: not-allowed;
+  transform: none;
 }
 
 .profile-display {
   margin-top: 12px;
   padding: 12px;
-  background: #f3f4f6;
-  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
   display: none;
 }
 
@@ -122,7 +155,7 @@ body.placeit-helper-active.sidebar-collapsed {
   display: block;
   font-size: 11px;
   font-weight: 600;
-  color: #6b7280;
+  color: var(--text-muted);
   margin-bottom: 4px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -130,8 +163,8 @@ body.placeit-helper-active.sidebar-collapsed {
 
 .profile-display .profile-value {
   font-size: 13px;
-  color: #111827;
-  font-family: 'Courier New', monospace;
+  color: var(--text);
+  font-family: inherit;
   word-break: break-all;
 }
 
@@ -143,8 +176,9 @@ body.placeit-helper-active.sidebar-collapsed {
 .tabs {
   display: flex;
   gap: 4px;
-  background: #f3f4f6;
-  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
   padding: 4px;
 }
 
@@ -153,24 +187,24 @@ body.placeit-helper-active.sidebar-collapsed {
   padding: 8px 12px;
   background: transparent;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   font-size: 13px;
   font-weight: 600;
-  color: #6b7280;
+  color: var(--text-muted);
   cursor: pointer;
   transition: all 0.2s;
   text-align: center;
 }
 
 .tab:hover {
-  color: #374151;
-  background: rgba(255, 255, 255, 0.5);
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .tab.active {
-  background: white;
-  color: #667eea;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .tab-content {
@@ -188,8 +222,8 @@ body.placeit-helper-active.sidebar-collapsed {
 
 .category-title {
   font-size: 12px;
-  font-weight: 600;
-  color: #374151;
+  font-weight: 700;
+  color: var(--text-muted);
   margin-bottom: 8px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -198,17 +232,17 @@ body.placeit-helper-active.sidebar-collapsed {
 .model-buttons {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 6px;
+  gap: 8px;
 }
 
 .model-btn {
   padding: 8px 10px;
-  background: #f3f4f6;
-  border: 2px solid #e5e7eb;
-  border-radius: 6px;
-  font-size: 11px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 12px;
   font-weight: 500;
-  color: #374151;
+  color: var(--text);
   cursor: pointer;
   transition: all 0.2s;
   text-align: center;
@@ -242,14 +276,14 @@ body.placeit-helper-active.sidebar-collapsed {
 }
 
 .model-btn:hover {
-  background: #e5e7eb;
-  border-color: #d1d5db;
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--accent-1);
 }
 
 .model-btn.selected {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-color: #667eea;
-  color: white;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2));
+  border-color: var(--accent-1);
+  color: var(--text);
 }
 
 .model-btn:active {
@@ -260,10 +294,9 @@ body.placeit-helper-active.sidebar-collapsed {
 .generate-section {
   position: sticky;
   bottom: 0;
-  background: white;
+  background: var(--bg);
   padding: 16px;
-  border-top: 1px solid #e5e7eb;
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+  border-top: 1px solid var(--border);
 }
 
 .generate-btn {
@@ -284,19 +317,21 @@ body.placeit-helper-active.sidebar-collapsed {
 }
 
 .generate-btn:hover:not(:disabled) {
-  background: #059669;
+  opacity: 0.9;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
 .generate-btn:disabled {
-  background: #9ca3af;
+  background: var(--surface);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
   cursor: not-allowed;
-  opacity: 0.5;
+  opacity: 0.7;
 }
 
 .generate-btn .count {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.2);
   padding: 2px 8px;
   border-radius: 12px;
   font-size: 12px;
@@ -314,7 +349,9 @@ body.placeit-helper-active.sidebar-collapsed {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Scrollbar */
@@ -323,25 +360,26 @@ body.placeit-helper-active.sidebar-collapsed {
 }
 
 .sidebar-content::-webkit-scrollbar-track {
-  background: #f3f4f6;
+  background: rgba(0, 0, 0, 0.2);
 }
 
 .sidebar-content::-webkit-scrollbar-thumb {
-  background: #d1d5db;
+  background: var(--border);
   border-radius: 3px;
 }
 
 .sidebar-content::-webkit-scrollbar-thumb:hover {
-  background: #9ca3af;
+  background: var(--text-muted);
 }
 
 /* Status Messages */
 .status-message {
-  margin-top: 8px;
-  padding: 8px 12px;
-  border-radius: 6px;
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
   font-size: 12px;
   display: none;
+  font-weight: 500;
 }
 
 .status-message.visible {
@@ -349,34 +387,34 @@ body.placeit-helper-active.sidebar-collapsed {
 }
 
 .status-message.success {
-  background: #d1fae5;
-  color: #065f46;
-  border: 1px solid #6ee7b7;
+  background: rgba(16, 185, 129, 0.1);
+  color: #34d399;
+  border: 1px solid rgba(52, 211, 153, 0.3);
 }
 
 .status-message.error {
-  background: #fee2e2;
-  color: #991b1b;
-  border: 1px solid #fca5a5;
+  background: rgba(239, 68, 68, 0.1);
+  color: #f87171;
+  border: 1px solid rgba(248, 113, 113, 0.3);
 }
 
 .status-message.info {
-  background: #dbeafe;
-  color: #1e40af;
-  border: 1px solid #93c5fd;
+  background: rgba(99, 102, 241, 0.1);
+  color: #818cf8;
+  border: 1px solid rgba(129, 140, 248, 0.3);
 }
 
 /* Empty State */
 .empty-state {
   text-align: center;
   padding: 40px 20px;
-  color: #6b7280;
+  color: var(--text-muted);
 }
 
 .empty-state-icon {
   font-size: 48px;
   margin-bottom: 12px;
-  opacity: 0.3;
+  opacity: 0.15;
 }
 
 .empty-state-text {
@@ -384,18 +422,37 @@ body.placeit-helper-active.sidebar-collapsed {
 }
 
 /* Collapsed State */
-#placeit-helper-sidebar.collapsed .sidebar-toggle {
-  margin: 8px auto;
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-  padding: 12px 4px;
-  height: auto;
-  width: 100%;
-  font-size: 14px;
-  border-radius: 6px 0 0 6px;
+#placeit-helper-sidebar.collapsed .sidebar-header {
+  background: transparent;
+  padding: 0;
 }
 
-#placeit-helper-sidebar.collapsed .sidebar-header {
-  flex-direction: column;
-  padding: 12px 4px;
+#placeit-helper-sidebar.collapsed .sidebar-toggle {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 48px;
+  background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+  color: white;
+  border: 1px solid var(--accent-2);
+  border-radius: 8px 0 0 8px;
+  margin: 0;
+  padding: 0;
+  writing-mode: horizontal-tb;
+  font-size: 18px;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.2);
+  pointer-events: auto;
+  opacity: 0.8;
+  transition: opacity 0.2s, right 0.2s;
+  z-index: 1000000;
+}
+
+#placeit-helper-sidebar.collapsed .sidebar-toggle:hover {
+  opacity: 1;
+}
+
+body.placeit-helper-active.sidebar-collapsed {
+  padding-right: 0 !important;
 }

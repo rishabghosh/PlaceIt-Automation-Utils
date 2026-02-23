@@ -142,7 +142,9 @@
     /* Input Number */
     .input-wrapper {
       position: relative;
-      width: 80px;
+      width: 52px;
+      display: flex;
+      align-items: center;
     }
 
     input[type="number"] {
@@ -152,12 +154,22 @@
       color: var(--text);
       font-family: inherit;
       font-size: 14px;
-      padding: 8px 28px 8px 12px;
+      padding: 6px 20px 6px 8px;
+      /* Room for s */
       border-radius: 8px;
       box-sizing: border-box;
       outline: none;
       transition: all 0.2s ease;
-      text-align: right;
+      text-align: center;
+      -moz-appearance: textfield;
+      /* Firefox */
+    }
+
+    /* Hide arrows across modern browsers */
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
     }
 
     input[type="number"]:focus {
@@ -167,11 +179,11 @@
 
     .suffix {
       position: absolute;
-      right: 12px;
+      right: 10px;
       top: 50%;
       transform: translateY(-50%);
       color: var(--text-muted);
-      font-size: 14px;
+      font-size: 13px;
       pointer-events: none;
       font-weight: 500;
     }

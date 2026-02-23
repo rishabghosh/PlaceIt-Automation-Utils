@@ -131,7 +131,7 @@ const createSidebarHTML = (frontCategories, backCategories) => {
   return `
     <div id="placeit-helper-sidebar">
       <div class="sidebar-header">
-        <h3 class="sidebar-title">PlaceIt Helper</h3>
+        <h3 class="sidebar-title">Placeit Automation</h3>
         <button class="sidebar-toggle" id="sidebar-toggle" title="Collapse sidebar">
           <span class="toggle-icon">←</span>
         </button>
