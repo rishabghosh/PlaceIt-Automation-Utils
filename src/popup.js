@@ -3,7 +3,8 @@ const ELEMENTS = {
   waitSeconds: 'waitSeconds',
   waitNextSeconds: 'waitNextSeconds',
   progressText: 'progressText',
-  progressBar: 'progressBar'
+  progressBar: 'progressBar',
+  processingSpinner: 'processingSpinner'
 };
 
 const updateProgressUI = (processed, total) => {
@@ -62,6 +63,16 @@ const initializeEventListeners = () => {
   chrome.runtime.onMessage.addListener((msg) => {
     if (msg.action === 'progress') {
       updateProgressUI(msg.processed, msg.total);
+    } else if (msg.action === 'queueUpdated') {
+      const spinner = document.getElementById(ELEMENTS.processingSpinner);
+      if (msg.isProcessing) {
+        spinner.classList.add('active');
+      } else {
+        spinner.classList.remove('active');
+      }
+    } else if (msg.action === 'runFinished') {
+      const spinner = document.getElementById(ELEMENTS.processingSpinner);
+      spinner.classList.remove('active');
     }
   });
 };
@@ -70,6 +81,17 @@ const requestCurrentProgress = () => {
   chrome.runtime.sendMessage({ action: 'getProgress' }, (response) => {
     if (response) {
       updateProgressUI(response.processed, response.total);
+    }
+  });
+
+  chrome.runtime.sendMessage({ action: 'getQueueStatus' }, (response) => {
+    if (response) {
+      const spinner = document.getElementById(ELEMENTS.processingSpinner);
+      if (response.isProcessing) {
+        spinner.classList.add('active');
+      } else {
+        spinner.classList.remove('active');
+      }
     }
   });
 };

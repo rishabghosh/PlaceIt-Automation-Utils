@@ -216,6 +216,31 @@
       transition: width 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
       border-radius: 5px;
     }
+
+    /* Spinner */
+    .spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(139, 92, 246, 0.3);
+      border-radius: 50%;
+      border-top-color: var(--accent-2);
+      animation: spin 1s ease-in-out infinite;
+      margin-left: 8px;
+      vertical-align: middle;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .spinner.active {
+      opacity: 1;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
   </style>
 </head>
 
@@ -267,7 +292,7 @@
 
   <div class="inner-card">
     <div class="progress-header">
-      <span class="status-text">Processing Status</span>
+      <span class="status-text">Processing Status<span class="spinner" id="processingSpinner"></span></span>
       <span class="count-text" id="progressText">0 / 0</span>
     </div>
     <div class="progress-track" id="progressTrack">
