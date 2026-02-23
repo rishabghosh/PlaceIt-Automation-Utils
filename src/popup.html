@@ -42,9 +42,17 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 16px;
-      margin-bottom: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    .inner-card {
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 24px;
     }
 
     .row {
@@ -215,6 +223,9 @@
   <h3>Placeit Automation</h3>
 
   <div class="card">
+    <div
+      style="font-size: 13px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 20px;">
+      Config</div>
     <div class="row">
       <div class="row-header">
         <div class="label-group">
@@ -241,7 +252,7 @@
       </div>
     </div>
     <div class="row">
-      <div class="row-header">
+      <div class="row-header" style="margin-bottom: 0;">
         <div class="label-group">
           <span class="title">Wait Next Item</span>
           <span class="subtitle">Delay before opening next mockup</span>
@@ -252,18 +263,19 @@
         </div>
       </div>
     </div>
+  </div>
 
-    <div class="card" style="margin-bottom: 0;">
-      <div class="progress-header">
-        <span class="status-text">Processing Status</span>
-        <span class="count-text" id="progressText">0 / 0</span>
-      </div>
-      <div class="progress-track" id="progressTrack">
-        <div class="progress-fill" id="progressBar"></div>
-      </div>
+  <div class="inner-card">
+    <div class="progress-header">
+      <span class="status-text">Processing Status</span>
+      <span class="count-text" id="progressText">0 / 0</span>
     </div>
+    <div class="progress-track" id="progressTrack">
+      <div class="progress-fill" id="progressBar"></div>
+    </div>
+  </div>
 
-    <script type="module" src="popup.js"></script>
+  <script type="module" src="popup.js"></script>
 </body>
 
 </html>
