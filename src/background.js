@@ -61,6 +61,16 @@ const queue = {
 };
 
 const handleStartRun = (payload, sendResponse) => {
+  const { rows, mapping } = payload;
+  const validRows = filterValidRows(rows);
+  const newMockups = calculateTotalMockups(validRows, mapping);
+
+  if (newMockups > 0) {
+    runState.totalMockups += newMockups;
+    logMessage(`Added ${newMockups} mockups to queue. Total: ${runState.totalMockups}`, 'info');
+    sendProgress(); // Refresh UI immediately
+  }
+
   queue.add(payload);
   sendResponse({ ok: true });
 };
@@ -673,11 +683,7 @@ const startRun = async ({ rows, mapping }) => {
     return;
   }
 
-  // Calculate total mockups
-  runState.totalMockups = calculateTotalMockups(validRows, mapping);
-  runState.processedMockups = 0;
-
-  logMessage(`Run started: ${validRows.length} valid rows, ${runState.totalMockups} total mockups`, 'info');
+  logMessage(`Run started: processing batch of ${validRows.length} valid rows`, 'info');
   sendProgress();
 
   for (let rowIndex = 0; rowIndex < validRows.length; rowIndex++) {
