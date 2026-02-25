@@ -1,4 +1,5 @@
 const ELEMENTS = {
+  themeToggle: 'themeToggle',
   saveToggle: 'saveToggle',
   waitSeconds: 'waitSeconds',
   waitNextSeconds: 'waitNextSeconds',
@@ -17,12 +18,20 @@ const updateProgressUI = (processed, total) => {
 };
 
 const initializeEventListeners = () => {
+  const themeToggle = document.getElementById(ELEMENTS.themeToggle);
   const saveToggle = document.getElementById(ELEMENTS.saveToggle);
   const waitSeconds = document.getElementById(ELEMENTS.waitSeconds);
   const waitNextSeconds = document.getElementById(ELEMENTS.waitNextSeconds);
 
   // Load saved settings from Chrome extension storage
-  chrome.storage.local.get(['shouldDownload', 'waitBeforeDownloadSeconds', 'waitNextItemSeconds'], (result) => {
+  chrome.storage.local.get(['isDarkTheme', 'shouldDownload', 'waitBeforeDownloadSeconds', 'waitNextItemSeconds'], (result) => {
+    // Theme setup
+    const isDarkTheme = result.isDarkTheme !== undefined ? result.isDarkTheme : true; // default dark
+    themeToggle.checked = isDarkTheme;
+    if (!isDarkTheme) {
+      document.body.classList.add('light-theme');
+    }
+
     if (result.shouldDownload !== undefined) {
       saveToggle.checked = result.shouldDownload;
     } else {
@@ -43,6 +52,16 @@ const initializeEventListeners = () => {
   });
 
   // Save settings on change
+  themeToggle.addEventListener('change', (e) => {
+    const isDark = e.target.checked;
+    chrome.storage.local.set({ isDarkTheme: isDark });
+    if (isDark) {
+      document.body.classList.remove('light-theme');
+    } else {
+      document.body.classList.add('light-theme');
+    }
+  });
+
   saveToggle.addEventListener('change', (e) => {
     chrome.storage.local.set({ shouldDownload: e.target.checked });
   });

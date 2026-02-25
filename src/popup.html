@@ -25,6 +25,28 @@
       margin: 0;
       padding: 20px;
       box-sizing: border-box;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    body.light-theme {
+      --bg: #f9fafb;
+      --surface: #ffffff;
+      --text: #111827;
+      --text-muted: #6b7280;
+      --border: #e5e7eb;
+    }
+
+    body.light-theme .inner-card,
+    body.light-theme input[type="number"] {
+      background: rgba(0, 0, 0, 0.05);
+    }
+
+    body.light-theme .count-text {
+      background: rgba(139, 92, 246, 0.1);
+    }
+
+    body.light-theme .progress-track {
+      background: rgba(0, 0, 0, 0.1);
     }
 
     h3 {
@@ -258,6 +280,24 @@
 
 <body>
   <h3>Placeit Automation</h3>
+
+  <div class="card">
+    <div
+      style="font-size: 13px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 20px;">
+      Theme</div>
+    <div class="row" style="margin-bottom: 0;">
+      <div class="row-header" style="margin-bottom: 0;">
+        <div class="label-group">
+          <span class="title">Dark Mode</span>
+          <span class="subtitle">Toggle application aesthetic</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="themeToggle" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+  </div>
 
   <div class="card">
     <div

@@ -364,6 +364,30 @@ const initializeSidebar = async () => {
   link.href = chrome.runtime.getURL('src/content.css');
   document.head.appendChild(link);
 
+  // Apply Theme
+  chrome.storage.local.get(['isDarkTheme'], (result) => {
+    const isDark = result.isDarkTheme !== undefined ? result.isDarkTheme : true;
+    const sidebarElement = document.getElementById('placeit-helper-sidebar');
+    if (sidebarElement && !isDark) {
+      sidebarElement.classList.add('light-theme');
+    }
+  });
+
+  // Listen for storage changes to update theme live
+  chrome.storage.onChanged.addListener((changes, namespace) => {
+    if (namespace === 'local' && changes.isDarkTheme !== undefined) {
+      const isDark = changes.isDarkTheme.newValue;
+      const sidebarElement = document.getElementById('placeit-helper-sidebar');
+      if (sidebarElement) {
+        if (isDark) {
+          sidebarElement.classList.remove('light-theme');
+        } else {
+          sidebarElement.classList.add('light-theme');
+        }
+      }
+    }
+  });
+
   // Add body class to enable push layout
   document.body.classList.add('placeit-helper-active');
 

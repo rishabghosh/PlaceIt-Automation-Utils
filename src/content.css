@@ -11,6 +11,36 @@
   --font: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
+#placeit-helper-sidebar.light-theme {
+  --bg: #f9fafb;
+  --surface: #ffffff;
+  --text: #111827;
+  --text-muted: #6b7280;
+  --border: #e5e7eb;
+}
+
+#placeit-helper-sidebar.light-theme .profile-display,
+#placeit-helper-sidebar.light-theme .tabs,
+#placeit-helper-sidebar.light-theme .generate-btn .count,
+#placeit-helper-sidebar.light-theme .sidebar-content::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+#placeit-helper-sidebar.light-theme .sidebar-toggle {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: var(--border);
+  color: var(--text);
+}
+
+#placeit-helper-sidebar.light-theme .sidebar-toggle:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+#placeit-helper-sidebar.light-theme .tab:hover,
+#placeit-helper-sidebar.light-theme .model-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
 #placeit-helper-sidebar {
   position: fixed;
   top: 0;
