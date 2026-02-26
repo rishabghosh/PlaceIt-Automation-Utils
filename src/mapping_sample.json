@@ -232,7 +232,7 @@
     "side": "front",
     "manualIntervention": true,
     "displayName": "Skinny Teen F1",
-    "actions": []
+    "actions": ["RemoveSleeve"]
   },
   "OF-Indian-Stylish-F-1": {
     "mockupUrl": "https://placeit.net/c/mockups/stages/oversized-round-neck-tee-mockup-featuring-a-woman-standing-against-a-colorful-backdrop-m53034/editor?colorFolder_Background=%23c0c0c0&colorFolder_Shirt%20Color=%23000000",
@@ -534,7 +534,7 @@
     "side": "front",
     "manualIntervention": true,
     "displayName": "Skinny Indian F1",
-    "actions": []
+    "actions": ["RemoveRightSleeve", "RemoveLeftSleeve"]
   },
   "HM-skinny-indian-B-1": {
     "mockupUrl": "https://placeit.net/c/mockups/stages/back-view-mockup-featuring-a-man-wearing-a-hoodie-from-gildan-in-a-studio-m37657/editor?colorFolder_Hoodie%20Color=%23000000&colorFolder_Background=%23c0c0c0",
@@ -633,6 +633,6 @@
     "side": "back",
     "manualIntervention": false,
     "displayName": "Magician B1",
-    "actions": ["HoodieRemoveSleeve"]
+    "actions": ["RemoveRightSleeve", "RemoveLeftSleeve"]
   }
 }

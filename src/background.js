@@ -469,16 +469,135 @@ const executeActions = async (tabId, actions) => {
           }
         };
 
+        const createRemoveDesignAction = (buttonTextMatch) => {
+          return async (timeoutMs = 10000) => {
+            try {
+              console.log(`[RemoveDesignAction] Executing for: ${buttonTextMatch}`);
+              const normalizeText = (value) => {
+                return (value || '').replace(/\s+/g, ' ').trim().toLowerCase();
+              };
+              const isVisible = (element) => {
+                if (!element) return false;
+                try {
+                  const rect = element.getBoundingClientRect();
+                  const style = window.getComputedStyle(element);
+                  return style.display !== 'none' &&
+                    style.visibility !== 'hidden' &&
+                    rect.width > 0 &&
+                    rect.height > 0;
+                } catch (e) {
+                  return false;
+                }
+              };
+
+              const findTargetContext = () => {
+                // Find all labels that act as titles for design files
+                const labels = document.querySelectorAll('label.title.file-upload-title');
+
+                // Find the label that exactly matches the requested design name
+                const targetLabel = Array.from(labels).find(label => {
+                  try {
+                    const text = normalizeText(label.innerText);
+                    return text === normalizeText(buttonTextMatch);
+                  } catch (e) {
+                    return false;
+                  }
+                });
+
+                if (!targetLabel) return null;
+
+                // The button we want to click is the dropdown toggle inside the *same* form-group as this label
+                const formGroup = targetLabel.closest('.form-group');
+                if (!formGroup) return null;
+
+                const dropdownBtn = formGroup.querySelector('button.btn.dropdown-toggle.btn-default');
+                if (!dropdownBtn) return null;
+
+                return { formGroup, dropdownBtn };
+              };
+
+              console.log(`[RemoveDesignAction] Searching for "${buttonTextMatch}" button...`);
+              const targetContext = await observeForElement(findTargetContext, timeoutMs / 2);
+              if (!targetContext) {
+                console.error(`[RemoveDesignAction] Button "${buttonTextMatch}" NOT found`);
+                return { success: false, message: 'target_button_not_found' };
+              }
+
+              const { formGroup, dropdownBtn } = targetContext;
+              console.log(`[RemoveDesignAction] Button FOUND:`, dropdownBtn);
+              const clickSuccess = clickElementSafely(dropdownBtn);
+
+              if (!clickSuccess) {
+                return { success: false, message: 'target_button_click_failed' };
+              }
+
+              console.log(`[RemoveDesignAction] Waiting 300ms for dropdown to open...`);
+              await new Promise(resolve => setTimeout(resolve, 300));
+
+              console.log(`[RemoveDesignAction] Searching for "Remove this image" option...`);
+              const findRemoveOption = () => {
+                const scopedRemoveCandidates = Array.from(formGroup.querySelectorAll('a.remove-placeholder'));
+                const visibleScopedRemove = scopedRemoveCandidates.find(isVisible);
+                if (visibleScopedRemove) return visibleScopedRemove;
+
+                const scopedTextMatch = Array.from(formGroup.querySelectorAll('a, button, div, span'))
+                  .find(el => normalizeText(el.innerText) === 'remove this image' && isVisible(el));
+                if (scopedTextMatch) return scopedTextMatch;
+
+                const openMenuSelectors = [
+                  '.dropdown.open a.remove-placeholder',
+                  '.dropdown-menu.show a.remove-placeholder',
+                  '.open a.remove-placeholder',
+                  'a.remove-placeholder'
+                ];
+
+                for (const selector of openMenuSelectors) {
+                  const candidate = Array.from(document.querySelectorAll(selector)).find(isVisible);
+                  if (candidate) return candidate;
+                }
+
+                return null;
+              };
+
+              const removeOption = await observeForElement(findRemoveOption, timeoutMs / 2);
+              if (!removeOption) {
+                console.error(`[RemoveDesignAction] "Remove this image" option NOT found`);
+                return { success: false, message: 'remove_option_not_found' };
+              }
+
+              console.log(`[RemoveDesignAction] "Remove this image" option FOUND:`, removeOption);
+              const removed = clickElementSafely(removeOption);
+              if (!removed) {
+                return { success: false, message: 'remove_option_click_failed' };
+              }
+
+              console.log(`[RemoveDesignAction] SUCCESS - Image removed for ${buttonTextMatch}`);
+
+              // Wait a bit after removing so UI updates properly before continuing
+              await new Promise(resolve => setTimeout(resolve, 900));
+
+              return { success: true, message: 'image_removed' };
+            } catch (e) {
+              console.error(`[RemoveDesignAction] ERROR:`, e?.message);
+              return { success: false, message: e?.message || 'unknown_error' };
+            }
+          };
+        };
+
         // Define actions mapping AFTER function definition
         const ACTIONS = {
-          HoodieRemoveSleeve: removeImageViaDropdown
+          HoodieRemoveSleeve: removeImageViaDropdown,
+          RemoveSleeve: createRemoveDesignAction('Sleeve Design'),
+          RemoveLeftSleeve: createRemoveDesignAction('Left Sleeve Design'),
+          RemoveRightSleeve: createRemoveDesignAction('Right Sleeve Design')
         };
 
         console.log('[executeActions-injected] ACTIONS object:', Object.keys(ACTIONS));
 
         // Execute each action
         const results = [];
-        for (const actionName of actionNames) {
+        for (const actionNameRaw of actionNames) {
+          const actionName = typeof actionNameRaw === 'string' ? actionNameRaw.trim() : actionNameRaw;
           console.log('[executeActions-injected] Processing action:', actionName);
           const actionFunc = ACTIONS[actionName];
           if (!actionFunc) {
@@ -545,6 +664,17 @@ const processTag = async (tag, baseUrl, customId, rowIndex, config, mappingEntry
     // Execute actions if they exist in the mapping entry
     if (mappingEntry && mappingEntry.actions && mappingEntry.actions.length > 0) {
       logMessage(`Executing ${mappingEntry.actions.length} action(s) for tag ${tag}`, 'info', { tag, rowIndex });
+
+      const storageActionsData = await chrome.storage.local.get(['waitBeforeActionsSeconds']);
+      const waitActionsSeconds = storageActionsData.waitBeforeActionsSeconds !== undefined ? parseFloat(storageActionsData.waitBeforeActionsSeconds) : 10;
+
+      if (waitActionsSeconds > 0) {
+        logMessage(`Waiting ${waitActionsSeconds} seconds before executing actions...`, 'info', { tag, rowIndex });
+        await sleep(waitActionsSeconds * 1000);
+      } else {
+        await sleep(1000); // 1s safety buffer
+      }
+
       const actionsResult = await executeActions(tab.id, mappingEntry.actions);
       logMessage(`Actions result: ${JSON.stringify(actionsResult)}`, 'info', { tag, rowIndex });
 

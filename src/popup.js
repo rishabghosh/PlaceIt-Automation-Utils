@@ -1,6 +1,7 @@
 const ELEMENTS = {
   themeToggle: 'themeToggle',
   saveToggle: 'saveToggle',
+  waitBeforeActionsSeconds: 'waitBeforeActionsSeconds',
   waitSeconds: 'waitSeconds',
   waitNextSeconds: 'waitNextSeconds',
   progressText: 'progressText',
@@ -20,11 +21,12 @@ const updateProgressUI = (processed, total) => {
 const initializeEventListeners = () => {
   const themeToggle = document.getElementById(ELEMENTS.themeToggle);
   const saveToggle = document.getElementById(ELEMENTS.saveToggle);
+  const waitBeforeActionsSeconds = document.getElementById(ELEMENTS.waitBeforeActionsSeconds);
   const waitSeconds = document.getElementById(ELEMENTS.waitSeconds);
   const waitNextSeconds = document.getElementById(ELEMENTS.waitNextSeconds);
 
   // Load saved settings from Chrome extension storage
-  chrome.storage.local.get(['isDarkTheme', 'shouldDownload', 'waitBeforeDownloadSeconds', 'waitNextItemSeconds'], (result) => {
+  chrome.storage.local.get(['isDarkTheme', 'shouldDownload', 'waitBeforeActionsSeconds', 'waitBeforeDownloadSeconds', 'waitNextItemSeconds'], (result) => {
     // Theme setup
     const isDarkTheme = result.isDarkTheme !== undefined ? result.isDarkTheme : true; // default dark
     themeToggle.checked = isDarkTheme;
@@ -36,6 +38,12 @@ const initializeEventListeners = () => {
       saveToggle.checked = result.shouldDownload;
     } else {
       saveToggle.checked = true; // default
+    }
+
+    if (result.waitBeforeActionsSeconds !== undefined) {
+      waitBeforeActionsSeconds.value = result.waitBeforeActionsSeconds;
+    } else {
+      waitBeforeActionsSeconds.value = 10; // default to 10s
     }
 
     if (result.waitBeforeDownloadSeconds !== undefined) {
@@ -64,6 +72,12 @@ const initializeEventListeners = () => {
 
   saveToggle.addEventListener('change', (e) => {
     chrome.storage.local.set({ shouldDownload: e.target.checked });
+  });
+
+  waitBeforeActionsSeconds.addEventListener('change', (e) => {
+    let val = parseFloat(e.target.value);
+    if (isNaN(val) || val < 0) val = 0;
+    chrome.storage.local.set({ waitBeforeActionsSeconds: val });
   });
 
   waitSeconds.addEventListener('change', (e) => {
